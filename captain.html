@@ -1,14 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Captain Panel - Italy Kids FC</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Captain Dashboard - Italy Kids FC</title>
   <!-- Bootstrap CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
   <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&family=Open+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+  <!-- Emoji Picker -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/emoji-picker-element@1.12.0/dist/emoji-picker.min.css">
   <style>
     :root {
       --primary: #1E5631;
@@ -16,13 +18,12 @@
       --accent: #FF6B00;
       --light: #f8f9fa;
       --dark: #212529;
-      --sidebar-width: 280px;
-    }
-    
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
+      --chat-bg: #f0f2f5;
+      --message-sent: #D9FDD3;
+      --message-received: #FFFFFF;
+      --chat-header: #1E5631;
+      --chat-input: #FFFFFF;
+      --online-indicator: #4CAF50;
     }
     
     body {
@@ -30,124 +31,70 @@
       background-color: #f5f7f9;
       color: #333;
       min-height: 100vh;
-      display: flex;
     }
     
-    h1, h2, h3, h4, h5, h6, .sidebar-brand {
+    h1, h2, h3, h4, h5, h6 {
       font-family: 'Montserrat', sans-serif;
       font-weight: 700;
     }
     
-    /* Sidebar */
-    .sidebar {
-      width: var(--sidebar-width);
+    .dashboard-header {
       background: var(--primary);
       color: white;
-      display: flex;
-      flex-direction: column;
-      flex-shrink: 0;
-      height: 100vh;
-      position: sticky;
-      top: 0;
-      box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+      padding: 20px 0;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
     }
     
-    .sidebar-brand {
-      padding: 20px;
-      font-size: 1.5rem;
-      border-bottom: 1px solid rgba(255,255,255,0.1);
+    .dashboard-brand {
       display: flex;
       align-items: center;
+      font-weight: 700;
+      font-size: 1.5rem;
     }
     
-    .sidebar-brand i {
+    .dashboard-brand i {
       color: var(--secondary);
       margin-right: 10px;
     }
     
-    .sidebar-nav {
-      flex: 1;
-      padding: 20px 0;
+    .captain-info {
+      text-align: right;
     }
     
-    .sidebar-nav button {
-      display: flex;
-      align-items: center;
-      width: 100%;
-      padding: 12px 20px;
-      background: transparent;
-      border: none;
-      color: white;
-      text-align: left;
-      cursor: pointer;
-      transition: all 0.3s;
+    .captain-name {
       font-weight: 600;
+      font-size: 1.1rem;
+      color: var(--secondary);
     }
     
-    .sidebar-nav button:hover, .sidebar-nav button.active {
-      background: rgba(255,255,255,0.1);
-      border-left: 4px solid var(--secondary);
+    .captain-role {
+      font-size: 0.9rem;
+      opacity: 0.8;
     }
     
-    .sidebar-nav button i {
-      margin-right: 10px;
-      width: 20px;
-      text-align: center;
+    .dashboard-nav {
+      background: white;
+      padding: 15px 0;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
     }
     
-    .sidebar-footer {
-      padding: 15px 20px;
-      border-top: 1px solid rgba(255,255,255,0.1);
-    }
-    
-    .sidebar-footer a {
-      display: block;
-      text-align: center;
-      color: white;
-      text-decoration: none;
-      padding: 10px;
+    .nav-link {
+      color: var(--dark);
+      font-weight: 600;
+      padding: 10px 15px;
       border-radius: 5px;
       transition: all 0.3s;
-      font-weight: 600;
     }
     
-    .sidebar-footer a:hover {
-      background: rgba(255,255,255,0.1);
+    .nav-link:hover, .nav-link.active {
+      background: var(--primary);
+      color: white;
     }
     
-    /* Main Content */
-    .main-content {
-      flex: 1;
-      padding: 30px;
-      overflow-y: auto;
+    .dashboard-content {
+      padding: 30px 0;
     }
     
-    .section-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 25px;
-    }
-    
-    .section-title {
-      color: var(--primary);
-      font-size: 1.8rem;
-      position: relative;
-      padding-bottom: 10px;
-    }
-    
-    .section-title:after {
-      content: '';
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      width: 50px;
-      height: 3px;
-      background: var(--secondary);
-      border-radius: 2px;
-    }
-    
-    /* Cards */
     .card {
       border: none;
       border-radius: 12px;
@@ -178,6 +125,23 @@
     
     .card-body {
       padding: 25px;
+    }
+    
+    .stat-card {
+      text-align: center;
+      padding: 20px;
+    }
+    
+    .stat-number {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: var(--primary);
+      margin: 10px 0;
+    }
+    
+    .stat-label {
+      color: #6c757d;
+      font-weight: 600;
     }
     
     /* Forms */
@@ -354,443 +318,1612 @@
       display: block;
     }
     
-    /* Responsive */
-    @media (max-width: 992px) {
-      body {
-        flex-direction: column;
+    .toast-container {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 9999;
+    }
+    
+    .toast {
+      background-color: var(--primary);
+      color: white;
+      padding: 12px 20px;
+      border-radius: 8px;
+      margin-bottom: 10px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      animation: slideIn 0.3s ease-out;
+    }
+    
+    .toast.error {
+      background-color: #dc3545;
+    }
+    
+    .toast.success {
+      background-color: var(--secondary);
+      color: var(--dark);
+    }
+    
+    .toast button {
+      background: transparent;
+      border: none;
+      color: inherit;
+      margin-left: 15px;
+      cursor: pointer;
+    }
+    
+    @keyframes slideIn {
+      from { transform: translateX(100%); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+    
+    /* Match and Training Cards */
+    .match-card, .training-card {
+      border-left: 4px solid var(--primary);
+    }
+    
+    .match-card.cancelled, .training-card.cancelled {
+      border-left-color: #dc3545;
+      opacity: 0.7;
+    }
+    
+    .match-card.completed, .training-card.completed {
+      border-left-color: #28a745;
+    }
+    
+    .match-time, .training-time {
+      font-weight: 600;
+      color: var(--primary);
+    }
+    
+    .match-location, .training-notes {
+      color: #6c757d;
+      font-size: 0.9rem;
+    }
+    
+    .badge-status {
+      font-size: 0.75rem;
+      padding: 0.35em 0.65em;
+    }
+    
+    /* Modal Styles */
+    .modal-content {
+      border-radius: 12px;
+      border: none;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+    }
+    
+    .modal-header {
+      background: var(--primary);
+      color: white;
+      border-radius: 12px 12px 0 0;
+    }
+    
+    .modal-header .btn-close {
+      filter: invert(1);
+    }
+    
+    /* Modern Chat Room Styles */
+    .chat-container {
+      display: flex;
+      flex-direction: column;
+      height: 70vh;
+      background: var(--chat-bg);
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+    }
+    
+    .chat-header {
+      background: var(--chat-header);
+      color: white;
+      padding: 15px 20px;
+      font-weight: 600;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid rgba(0,0,0,0.1);
+    }
+    
+    .chat-info {
+      display: flex;
+      align-items: center;
+    }
+    
+    .online-indicator {
+      width: 10px;
+      height: 10px;
+      background-color: var(--online-indicator);
+      border-radius: 50%;
+      margin-left: 10px;
+      position: relative;
+    }
+    
+    .online-indicator::after {
+      content: '';
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background-color: var(--online-indicator);
+      border-radius: 50%;
+      animation: pulse 1.5s infinite;
+    }
+    
+    @keyframes pulse {
+      0% {
+        transform: scale(1);
+        opacity: 0.8;
+      }
+      70% {
+        transform: scale(2);
+        opacity: 0;
+      }
+      100% {
+        transform: scale(1);
+        opacity: 0;
+      }
+    }
+    
+    .chat-actions button {
+      background: transparent;
+      border: none;
+      color: white;
+      margin-left: 10px;
+      cursor: pointer;
+      font-size: 1rem;
+    }
+    
+    .chat-messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 20px;
+      background: var(--chat-bg);
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .message {
+      margin-bottom: 15px;
+      display: flex;
+      flex-direction: column;
+      max-width: 80%;
+      position: relative;
+    }
+    
+    .message.sent {
+      align-items: flex-end;
+      align-self: flex-end;
+    }
+    
+    .message.received {
+      align-items: flex-start;
+      align-self: flex-start;
+    }
+    
+    .message-bubble {
+      padding: 12px 16px;
+      border-radius: 18px;
+      position: relative;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+      max-width: 100%;
+      word-wrap: break-word;
+    }
+    
+    .sent .message-bubble {
+      background: var(--message-sent);
+      color: var(--dark);
+      border-bottom-right-radius: 4px;
+    }
+    
+    .received .message-bubble {
+      background: var(--message-received);
+      color: var(--dark);
+      border-bottom-left-radius: 4px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    }
+    
+    .message-info {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 5px;
+    }
+    
+    .message-sender {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #6c757d;
+    }
+    
+    .message-time {
+      font-size: 0.75rem;
+      color: #adb5bd;
+      margin-left: 10px;
+    }
+    
+    .message-actions {
+      display: none;
+      position: absolute;
+      top: -20px;
+      right: 10px;
+      background: white;
+      border-radius: 15px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      padding: 5px;
+      z-index: 10;
+    }
+    
+    .message:hover .message-actions {
+      display: flex;
+    }
+    
+    .message-actions button {
+      background: none;
+      border: none;
+      padding: 5px;
+      cursor: pointer;
+      font-size: 0.8rem;
+      color: #6c757d;
+    }
+    
+    .message-actions button:hover {
+      color: var(--primary);
+    }
+    
+    .chat-input-container {
+      padding: 15px;
+      background: var(--chat-input);
+      border-top: 1px solid #e9ecef;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .chat-input-wrapper {
+      display: flex;
+      align-items: center;
+      flex: 1;
+      background: white;
+      border-radius: 24px;
+      padding: 0 15px;
+      border: 1px solid #ddd;
+    }
+    
+    .chat-input {
+      flex: 1;
+      padding: 12px 0;
+      border: none;
+      outline: none;
+      background: transparent;
+    }
+    
+    .chat-input-actions {
+      display: flex;
+      align-items: center;
+    }
+    
+    .chat-input-actions button {
+      background: transparent;
+      border: none;
+      color: #6c757d;
+      cursor: pointer;
+      font-size: 1.1rem;
+      padding: 8px;
+      border-radius: 50%;
+      transition: all 0.2s;
+    }
+    
+    .chat-input-actions button:hover {
+      background: #f0f2f5;
+      color: var(--primary);
+    }
+    
+    .send-button {
+      background: var(--primary) !important;
+      color: white !important;
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .send-button:hover {
+      background: #164324 !important;
+      transform: scale(1.05);
+    }
+    
+    .media-preview-container {
+      padding: 10px 15px;
+      border-top: 1px solid #eee;
+      background: #f9f9f9;
+      display: none;
+    }
+    
+    .media-preview {
+      position: relative;
+      display: inline-block;
+      margin-right: 10px;
+      margin-bottom: 10px;
+    }
+    
+    .media-preview img, .media-preview video {
+      max-width: 100px;
+      max-height: 100px;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    
+    .remove-media {
+      position: absolute;
+      top: -8px;
+      right: -8px;
+      background: #ff4d4d;
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 20px;
+      height: 20px;
+      font-size: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    
+    .typing-indicator {
+      display: flex;
+      padding: 10px 15px;
+      background: white;
+      border-radius: 18px;
+      align-self: flex-start;
+      margin-bottom: 10px;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+    }
+    
+    .typing-indicator span {
+      width: 8px;
+      height: 8px;
+      background-color: #9e9ea1;
+      border-radius: 50%;
+      display: inline-block;
+      margin: 0 2px;
+      animation: typing 1.4s infinite both;
+    }
+    
+    .typing-indicator span:nth-child(2) {
+      animation-delay: 0.2s;
+    }
+    
+    .typing-indicator span:nth-child(3) {
+      animation-delay: 0.4s;
+    }
+    
+    @keyframes typing {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.5); }
+      100% { transform: scale(1); }
+    }
+    
+    .chat-date-divider {
+      display: flex;
+      align-items: center;
+      margin: 15px 0;
+      color: #6c757d;
+      font-size: 0.8rem;
+    }
+    
+    .chat-date-divider::before,
+    .chat-date-divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background-color: #e0e0e0;
+      margin: 0 10px;
+    }
+    
+    .edit-message-form {
+      display: flex;
+      width: 100%;
+      margin-top: 10px;
+    }
+    
+    .edit-message-form input {
+      flex: 1;
+      padding: 8px 12px;
+      border: 1px solid #ddd;
+      border-radius: 15px;
+      margin-right: 5px;
+      outline: none;
+    }
+    
+    .edit-message-form button {
+      background: var(--secondary);
+      border: none;
+      border-radius: 15px;
+      padding: 0 12px;
+      cursor: pointer;
+      color: var(--dark);
+      font-weight: 600;
+    }
+    
+    .chat-media-preview {
+      max-width: 200px;
+      max-height: 150px;
+      border-radius: 8px;
+      margin-top: 5px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    
+    .hidden {
+      display: none;
+    }
+    
+    /* Message reactions */
+    .message-reactions {
+      display: flex;
+      margin-top: 5px;
+      flex-wrap: wrap;
+    }
+    
+    .reaction {
+      background: rgba(0,0,0,0.05);
+      border-radius: 12px;
+      padding: 2px 6px;
+      margin-right: 5px;
+      margin-bottom: 5px;
+      font-size: 0.8rem;
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+    }
+    
+    .reaction:hover {
+      background: rgba(0,0,0,0.1);
+    }
+    
+    .reaction-count {
+      margin-left: 4px;
+      font-weight: 600;
+    }
+    /* New styles for improved chat */
+    .replying-to {
+      display: flex;
+      align-items: center;
+      padding: 10px 15px;
+      background-color: #f0f2f5;
+      border-bottom: 1px solid #e0e0e0;
+      font-size: 0.9rem;
+    }
+    
+    .replying-to i {
+      margin-right: 8px;
+      color: var(--primary);
+    }
+    
+    .replying-to .text {
+      flex: 1;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    
+    .replying-to button {
+      background: none;
+      border: none;
+      color: #6c757d;
+      cursor: pointer;
+      padding: 5px;
+    }
+    
+    .message-reply {
+      background-color: rgba(0,0,0,0.05);
+      border-left: 3px solid var(--secondary);
+      padding: 8px 12px;
+      margin-bottom: 8px;
+      border-radius: 4px;
+    }
+    
+    .reply-info {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--primary);
+      margin-bottom: 4px;
+    }
+    
+    .message-reply-content {
+      font-size: 0.85rem;
+      color: #6c757d;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    
+    .chat-load-more {
+      text-align: center;
+      padding: 10px;
+      margin: 10px 0;
+    }
+    
+    .chat-typing {
+      padding: 5px 15px;
+      font-size: 0.85rem;
+      color: #6c757d;
+      font-style: italic;
+    }
+    
+    .message-menu {
+      position: absolute;
+      top: -30px;
+      right: 0;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      padding: 5px;
+      z-index: 100;
+      display: none;
+    }
+    
+    .message:hover .message-menu {
+      display: block;
+    }
+    
+    .message-menu button {
+      display: block;
+      width: 100%;
+      text-align: left;
+      padding: 8px 12px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 0.9rem;
+    }
+    
+    .message-menu button:hover {
+      background-color: #f0f2f5;
+    }
+    
+    .chat-scroll-indicator {
+      position: fixed;
+      bottom: 100px;
+      right: 30px;
+      background: var(--primary);
+      color: white;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+      z-index: 10;
+      opacity: 0;
+      transition: opacity 0.3s, transform 0.3s;
+    }
+    
+    .chat-scroll-indicator:hover {
+      transform: scale(1.1);
+    }
+    
+    .chat-scroll-indicator.visible {
+      opacity: 1;
+    }
+    
+    /* Section header improvements */
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+      gap: 15px;
+    }
+    
+    .section-title {
+      margin: 0;
+      color: var(--primary);
+    }
+    
+    /* Achievements Styles */
+    .achievement-card {
+      border-left: 4px solid var(--secondary);
+      transition: all 0.3s;
+    }
+    
+    .achievement-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+    }
+    
+    .achievement-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 10px;
+    }
+    
+    .achievement-title {
+      font-weight: 600;
+      color: var(--primary);
+      margin-bottom: 5px;
+    }
+    
+    .achievement-player {
+      font-size: 0.9rem;
+      color: #6c757d;
+    }
+    
+    .achievement-description {
+      color: #555;
+      margin-bottom: 15px;
+    }
+    
+    .achievement-date {
+      font-size: 0.8rem;
+      color: #888;
+      text-align: right;
+    }
+    
+    .achievement-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 15px;
+    }
+
+    /* Responsive adjustments for chat */
+    @media (max-width: 768px) {
+      .chat-container {
+        height: 60vh;
       }
       
-      .sidebar {
-        width: 100%;
-        height: auto;
-        position: relative;
+      .message {
+        max-width: 90%;
       }
       
-      .sidebar-nav {
-        display: flex;
+      .chat-input-actions {
         flex-wrap: wrap;
-        justify-content: center;
       }
       
-      .sidebar-nav button {
-        width: auto;
-        margin: 5px;
-        border-radius: 5px;
+      .dashboard-nav .nav {
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        padding-bottom: 5px;
       }
       
-      .main-content {
-        padding: 20px;
+      .dashboard-nav .nav-link {
+        white-space: nowrap;
       }
+      
+      .chat-scroll-indicator {
+        bottom: 90px;
+        right: 20px;
+        width: 35px;
+        height: 35px;
+      }
+    }
+    
+    /* Emoji Picker Styles */
+    .emoji-picker-container {
+      position: absolute;
+      bottom: 70px;
+      right: 15px;
+      z-index: 1000;
+      display: none;
+      width: 350px;
+      max-width: 90%;
+    }
+    
+    .emoji-picker-container.visible {
+      display: block;
+      animation: fadeIn 0.2s;
+    }
+    
+    /* Search Modal Styles */
+    .search-results {
+      max-height: 300px;
+      overflow-y: auto;
+    }
+    
+    .search-result-item {
+      padding: 10px;
+      border-bottom: 1px solid #eee;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+    
+    .search-result-item:hover {
+      background-color: #f5f5f5;
+    }
+    
+    /* Chat Options Dropdown */
+    .chat-options-dropdown {
+      position: absolute;
+      top: 100%;
+      right: 0;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      padding: 10px 0;
+      z-index: 1000;
+      display: none;
+      min-width: 150px;
+    }
+    
+    .chat-options-dropdown.visible {
+      display: block;
+      animation: fadeIn 0.2s;
+    }
+    
+    .chat-options-dropdown button {
+      display: block;
+      width: 100%;
+      text-align: left;
+      padding: 8px 15px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 0.9rem;
+      transition: background-color 0.2s;
+    }
+    
+    .chat-options-dropdown button:hover {
+      background-color: #f0f2f5;
+    }
+    
+    /* Loading spinner */
+    .loading-spinner {
+      display: inline-block;
+      width: 2rem;
+      height: 2rem;
+      border: 3px solid #f3f3f3;
+      border-radius: 50%;
+      border-top: 3px solid var(--primary);
+      animation: spin 1s linear infinite;
+    }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    
+    /* Highlight animation for messages */
+    .message.highlight {
+      animation: highlightMessage 2s ease;
+    }
+    
+    @keyframes highlightMessage {
+      0% { background-color: rgba(255, 255, 0, 0.3); }
+      100% { background-color: transparent; }
+    }
+    
+    /* Improved scrollbar for chat */
+    .chat-messages::-webkit-scrollbar {
+      width: 8px;
+    }
+    
+    .chat-messages::-webkit-scrollbar-track {
+      background: #f1f1f1;
+      border-radius: 10px;
+    }
+    
+    .chat-messages::-webkit-scrollbar-thumb {
+      background: #c1c1c1;
+      border-radius: 10px;
+    }
+    
+    .chat-messages::-webkit-scrollbar-thumb:hover {
+      background: #a8a8a8;
     }
   </style>
 </head>
 <body>
+  <!-- Toast notifications container -->
+  <div class="toast-container" id="toastContainer"></div>
 
-  <!-- Sidebar -->
-  <aside class="sidebar">
-    <div class="sidebar-brand">
-      <i class="fas fa-crown"></i> Captain Panel
+  <!-- Header -->
+  <header class="dashboard-header">
+    <div class="container">
+      <div class="row align-items-center">
+        <div class="col-md-6">
+          <div class="dashboard-brand">
+            <i class="fas fa-crown"></i> Captain Dashboard
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="captain-info">
+            <div class="captain-name" id="captainNameDisplay">Captain Name</div>
+            <div class="captain-role">Team Captain</div>
+          </div>
+        </div>
+      </div>
     </div>
-    
-    <nav class="sidebar-nav">
-      <button class="active" onclick="showSection('addPlayer')">
-        <i class="fas fa-user-plus"></i> Add Player
-      </button>
-      <button onclick="showSection('viewPlayers')">
-        <i class="fas fa-users"></i> View Players
-      </button>
-      <button onclick="showSection('ads')">
-        <i class="fas fa-ad"></i> Post Ads
-      </button>
-      <button onclick="showSection('gallery')">
-        <i class="fas fa-images"></i> Gallery
-      </button>
-      <button onclick="showSection('notifications')">
-        <i class="fas fa-bell"></i> Notifications
-      </button>
-    </nav>
-    
-    <div class="sidebar-footer">
-      <a href="login.html">
-        <i class="fas fa-sign-out-alt"></i> Logout
-      </a>
+  </header>
+
+  <!-- Navigation -->
+  <nav class="dashboard-nav">
+    <div class="container">
+      <ul class="nav">
+        <li class="nav-item">
+          <a class="nav-link active" href="#" onclick="showSection('dashboard')"><i class="fas fa-home me-2"></i>Dashboard</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#" onclick="showSection('addPlayer')"><i class="fas fa-user-plus me-2"></i>Add Player</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#" onclick="showSection('viewPlayers')"><i class="fas fa-users me-2"></i>Players</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#" onclick="showSection('achievements')"><i class="fas fa-trophy me-2"></i>Achievements</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#" onclick="showSection('training')"><i class="fas fa-running me-2"></i>Training</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#" onclick="showSection('matches')"><i class="fas fa-trophy me-2"></i>Matches</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#" onclick="showSection('ads')"><i class="fas fa-ad me-2"></i>Ads</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#" onclick="showSection('gallery')"><i class="fas fa-images me-2"></i>Gallery</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#" onclick="showSection('notifications')"><i class="fas fa-bell me-2"></i>Applications</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#" onclick="showSection('chatRoom')"><i class="fas fa-comments me-2"></i>Room</a>
+        </li>
+        <li class="nav-item ms-auto">
+          <a class="nav-link" href="#" id="logoutBtn"><i class="fas fa-sign-out-alt me-2"></i>Logout</a>
+        </li>
+      </ul>
     </div>
-  </aside>
+  </nav>
 
   <!-- Main Content -->
-  <main class="main-content">
-    <!-- Add Player -->
-    <section id="addPlayer" class="section active">
-      <div class="section-header">
-        <h2 class="section-title">Add New Player</h2>
-      </div>
-      
-      <div class="card">
-        <div class="card-header">
-          <i class="fas fa-user-plus"></i> Player Information
+  <main class="dashboard-content">
+    <div class="container">
+      <!-- Dashboard Section -->
+      <section id="dashboard" class="section active">
+        <div class="row">
+          <div class="col-md-6 col-lg-3 mb-4">
+            <div class="card stat-card">
+              <i class="fas fa-users fa-2x text-primary"></i>
+              <div class="stat-number" id="playersCount">0</div>
+              <div class="stat-label">Total Players</div>
+            </div>
+          </div>
+          <div class="col-md-6 col-lg-3 mb-4">
+            <div class="card stat-card">
+              <i class="fas fa-calendar-check fa-2x text-primary"></i>
+              <div class="stat-number" id="trainingCount">0</div>
+              <div class="stat-label">Upcoming Sessions</div>
+            </div>
+          </div>
+          <div class="col-md-6 col-lg-3 mb-4">
+            <div class="card stat-card">
+              <i class="fas fa-trophy fa-2x text-primary"></i>
+              <div class="stat-number" id="matchesCount">0</div>
+              <div class="stat-label">Next Matches</div>
+            </div>
+          </div>
+          <div class="col-md-6 col-lg-3 mb-4">
+            <div class="card stat-card">
+              <i class="fas fa-bell fa-2x text-primary"></i>
+              <div class="stat-number" id="notificationsCount">0</div>
+              <div class="stat-label">Applications</div>
+            </div>
+          </div>
         </div>
-        <div class="card-body">
-          <form>
-            <div class="row">
-              <div class="col-md-6 mb-3">
-                <label class="form-label">Full Name</label>
-                <input type="text" class="form-control" placeholder="Enter player's full name">
-              </div>
-              <div class="col-md-6 mb-3">
-                <label class="form-label">Username</label>
-                <input type="text" class="form-control" placeholder="Choose a username">
-              </div>
-            </div>
-            
-            <div class="row">
-              <div class="col-md-6 mb-3">
-                <label class="form-label">Phone Number</label>
-                <input type="tel" class="form-control" placeholder="Enter phone number">
-              </div>
-              <div class="col-md-6 mb-3">
-                <label class="form-label">Position</label>
-                <select class="form-select">
-                  <option value="">Select Position</option>
-                  <option>Goalkeeper</option>
-                  <option>Defender</option>
-                  <option>Midfielder</option>
-                  <option>Forward</option>
-                </select>
-              </div>
-            </div>
-            
-            <div class="mb-3">
-              <label class="form-label">Profile Picture</label>
-              <input type="file" class="form-control">
-            </div>
-            
-            <button type="button" class="btn btn-primary">
-              <i class="fas fa-plus-circle me-2"></i> Add Player
-            </button>
-          </form>
-        </div>
-      </div>
-    </section>
 
-    <!-- View Players -->
-    <section id="viewPlayers" class="section">
-      <div class="section-header">
-        <h2 class="section-title">Team Players</h2>
-        <div class="input-group" style="max-width: 300px;">
-          <input type="text" class="form-control" placeholder="Search players...">
-          <button class="btn btn-primary">
-            <i class="fas fa-search"></i>
-          </button>
-        </div>
-      </div>
-      
-      <div class="row">
-        <div class="col-lg-6">
-          <div class="card">
-            <div class="card-header">
-              <i class="fas fa-user"></i> John Doe
-              <button class="btn btn-sm btn-danger ms-auto">
-                <i class="fas fa-trash"></i> Delete
-              </button>
-            </div>
-            <div class="card-body">
-              <div class="player-stats">
-                <div class="stat-item">
-                  <div class="stat-label">
-                    <span>Training</span>
-                    <span>75%</span>
-                  </div>
-                  <div class="progress">
-                    <div class="progress-bar" style="width: 75%; background: #27ae60;">75%</div>
-                  </div>
-                </div>
-                
-                <div class="stat-item">
-                  <div class="stat-label">
-                    <span>Speed</span>
-                    <span>85%</span>
-                  </div>
-                  <div class="progress">
-                    <div class="progress-bar" style="width: 85%; background: #2980b9;">85%</div>
-                  </div>
-                </div>
-                
-                <div class="stat-item">
-                  <div class="stat-label">
-                    <span>Behavior</span>
-                    <span>90%</span>
-                  </div>
-                  <div class="progress">
-                    <div class="progress-bar" style="width: 90%; background: #f39c12;">90%</div>
-                  </div>
-                </div>
-                
-                <div class="stat-item">
-                  <div class="stat-label">
-                    <span>Performance</span>
-                    <span>80%</span>
-                  </div>
-                  <div class="progress">
-                    <div class="progress-bar" style="width: 80%; background: #8e44ad;">80%</div>
+        <div class="row">
+          <div class="col-lg-8 mb-4">
+            <div class="card">
+              <div class="card-header">
+                <i class="fas fa-calendar-alt"></i> Upcoming Events
+              </div>
+              <div class="card-body">
+                <div id="upcomingEvents">
+                  <div class="text-center py-4">
+                    <div class="loading-spinner mx-auto"></div>
+                    <p class="mt-2">Loading events...</p>
                   </div>
                 </div>
               </div>
             </div>
+          </div>
+          <div class="col-lg-4 mb-4">
+            <div class="card">
+              <div class="card-header">
+                <i class="fas fa-bell"></i> Recent Notifications
+              </div>
+              <div class="card-body" id="recentNotifications">
+                <div class="text-center py-4">
+                  <div class="loading-spinner mx-auto"></div>
+                  <p class="mt-2">Loading notifications...</p>
+                  </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-12">
+            <div class="card">
+              <div class="card-header">
+                <i class="fas fa-users"></i> Quick Actions
+              </div>
+              <div class="card-body">
+                <div class="d-grid gap-2 d-md-flex">
+                  <button class="btn btn-primary me-md-2" onclick="showSection('addPlayer')">
+                    <i class="fas fa-user-plus me-2"></i> Add Player
+                  </button>
+                  <button class="btn btn-success me-md-2" onclick="showSection('achievements')">
+                    <i class="fas fa-trophy me-2"></i> Add Achievement
+                  </button>
+                  <button class="btn btn-success me-md-2" onclick="showSection('training')">
+                    <i class="fas fa-calendar-plus me-2"></i> Schedule Training
+                  </button>
+                  <button class="btn btn-primary me-md-2" onclick="showSection('matches')">
+                    <i class="fas fa-trophy me-2"></i> Plan Match
+                  </button>
+                  <button class="btn btn-primary" onclick="showSection('ads')">
+                    <i class="fas fa-ad me-2"></i> Post Advertisement
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Add Player -->
+      <section id="addPlayer" class="section">
+        <div class="section-header">
+          <h2 class="section-title">Add New Player</h2>
+        </div>
+        
+        <div class="card">
+          <div class="card-header">
+            <i class="fas fa-user-plus"></i> Player Information
+          </div>
+          <div class="card-body">
+            <form id="addPlayerForm">
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <label class="form-label">Full Name</label>
+                  <input type="text" class="form-control" id="fullname" placeholder="Enter player's full name" required>
+                </div>
+                <div class="col-md-6 mb-3">
+                  <label class="form-label">Username</label>
+                  <input type="text" class="form-control" id="username" placeholder="Choose a username" required>
+                </div>
+              </div>
+              
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <label class="form-label">Phone Number</label>
+                  <input type="tel" class="form-control" id="phone" placeholder="Enter phone number" required>
+                </div>
+                <div class="col-md-6 mb-3">
+                  <label class="form-label">Position</label>
+                  <select class="form-select" id="position" required>
+                    <option value="">Select Position</option>
+                    <option>Goalkeeper</option>
+                    <option>Defender</option>
+                    <option>Midfielder</option>
+                    <option>Forward</option>
+                  </select>
+                </div>
+              </div>
+              
+              <div class="mb-3">
+                <label class="form-label">Profile Picture</label>
+                <input type="file" class="form-control" id="profile_pic" accept="image/*">
+              </div>
+              
+              <button type="submit" class="btn btn-primary">
+                <i class="fas fa-plus-circle me-2"></i> Add Player
+              </button>
+            </form>
+          </div>
+        </div>
+      </section>
+
+      <!-- View Players -->
+      <section id="viewPlayers" class="section">
+        <div class="section-header">
+          <h2 class="section-title">Team Players</h2>
+          <div class="input-group" style="max-width: 300px;">
+            <input type="text" class="form-control" id="playerSearch" placeholder="Search players..." onkeyup="filterPlayers()">
+            <button class="btn btn-primary" onclick="filterPlayers()">
+              <i class="fas fa-search"></i>
+            </button>
           </div>
         </div>
         
-        <div class="col-lg-6">
-          <div class="card">
-            <div class="card-header">
-              <i class="fas fa-user"></i> Michael Johnson
-              <button class="btn btn-sm btn-danger ms-auto">
-                <i class="fas fa-trash"></i> Delete
+        <div class="row" id="playersContainer">
+          <!-- Player cards will be dynamically inserted here -->
+        </div>
+      </section>
+
+      <!-- Achievements Section -->
+      <section id="achievements" class="section">
+        <div class="section-header d-flex justify-content-between align-items-center">
+          <h2 class="section-title">Player Achievements</h2>
+          <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addAchievementModal">
+            <i class="fas fa-plus me-2"></i> Add Achievement
+          </button>
+        </div>
+        
+        <div class="card">
+          <div class="card-header">
+            <i class="fas fa-trophy"></i> All Achievements
+          </div>
+          <div class="card-body">
+            <div id="achievementsContainer">
+              <div class="text-center py-4">
+                <div class="loading-spinner mx-auto"></div>
+                <p class="mt-2">Loading achievements...</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Training Section -->
+      <section id="training" class="section">
+        <div class="section-header d-flex justify-content-between align-items-center">
+          <h2 class="section-title">Training Sessions</h2>
+          <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addTrainingModal">
+            <i class="fas fa-plus me-2"></i> Add Training
+          </button>
+        </div>
+        
+        <div class="card">
+          <div class="card-header">
+            <i class="fas fa-running"></i> Upcoming Training Sessions
+          </div>
+          <div class="card-body">
+            <div id="trainingContainer">
+              <div class="text-center py-4">
+                <div class="loading-spinner mx-auto"></div>
+                <p class="mt-2">Loading training sessions...</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Matches Section -->
+      <section id="matches" class="section">
+        <div class="section-header d-flex justify-content-between align-items-center">
+          <h2 class="section-title">Match Schedule</h2>
+          <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addMatchModal">
+            <i class="fas fa-plus me-2"></i> Plan Match
+          </button>
+        </div>
+        
+        <div class="card">
+          <div class="card-header">
+            <i class="fas fa-trophy"></i> Upcoming Matches
+          </div>
+          <div class="card-body">
+            <div id="matchesContainer">
+              <div class="text-center py-4">
+                <div class="loading-spinner mx-auto"></div>
+                <p class="mt-2">Loading matches...</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Ads -->
+      <section id="ads" class="section">
+        <div class="section-header">
+          <h2 class="section-title">Advertisement Management</h2>
+        </div>
+        
+        <div class="card">
+          <div class="card-header">
+            <i class="fas fa-ad"></i> Upload Ad
+          </div>
+          <div class="card-body">
+            <form id="addAdForm">
+              <div class="mb-3">
+                <label class="form-label">Ad Title</label>
+                <input type="text" class="form-control" id="adTitle" placeholder="Enter ad title" required>
+              </div>
+              
+              <div class="mb-3">
+                <label class="form-label">Ad Image</label>
+                <input type="file" class="form-control" id="adImage" accept="image/*" required>
+              </div>
+              
+              <div class="mb-3">
+                <label class="form-label">Ad Link (Optional)</label>
+                <input type="url" class="form-control" id="adLink" placeholder="https://example.com">
+              </div>
+              
+              <div class="mb-3">
+                <label class="form-label">Active Until</label>
+                <input type="date" class="form-control" id="adValidUntil" required>
+              </div>
+              
+              <button type="submit" class="btn btn-success">
+                <i class="fas fa-upload me-2"></i> Upload Ad
               </button>
-            </div>
-            <div class="card-body">
-              <div class="player-stats">
-                <div class="stat-item">
-                  <div class="stat-label">
-                    <span>Training</span>
-                    <span>65%</span>
-                  </div>
-                  <div class="progress">
-                    <div class="progress-bar" style="width: 65%; background: #27ae60;">65%</div>
-                  </div>
-                </div>
-                
-                <div class="stat-item">
-                  <div class="stat-label">
-                    <span>Speed</span>
-                    <span>70%</span>
-                  </div>
-                  <div class="progress">
-                    <div class="progress-bar" style="width: 70%; background: #2980b9;">70%</div>
-                  </div>
-                </div>
-                
-                <div class="stat-item">
-                  <div class="stat-label">
-                    <span>Behavior</span>
-                    <span>95%</span>
-                  </div>
-                  <div class="progress">
-                    <div class="progress-bar" style="width: 95%; background: #f39c12;">95%</div>
-                  </div>
-                </div>
-                
-                <div class="stat-item">
-                  <div class="stat-label">
-                    <span>Performance</span>
-                    <span>75%</span>
-                  </div>
-                  <div class="progress">
-                    <div class="progress-bar" style="width: 75%; background: #8e44ad;">75%</div>
-                  </div>
-                </div>
-              </div>
+            </form>
+          </div>
+        </div>
+        
+        <div class="card">
+          <div class="card-header">
+            <i class="fas fa-images"></i> Active Ads
+          </div>
+          <div class="card-body">
+            <div class="row" id="adsContainer">
+              <!-- Ads will be dynamically inserted here -->
             </div>
           </div>
         </div>
-      </div>
-    </section>
+      </section>
 
-    <!-- Ads -->
-    <section id="ads" class="section">
-      <div class="section-header">
-        <h2 class="section-title">Advertisement Management</h2>
-      </div>
+      <!-- Gallery -->
+      <section id="gallery" class="section">
+        <div class="section-header">
+          <h2 class="section-title">Gallery Management</h2>
+        </div>
+        
+        <div class="card">
+          <div class="card-header">
+            <i class="fas fa-upload"></i> Upload Media
+          </div>
+          <div class="card-body">
+            <form id="uploadGalleryForm">
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <label class="form-label">Media Type</label>
+                  <select class="form-select" id="mediaType" required>
+                    <option value="">Select Type</option>
+                    <option value="image">Image</option>
+                    <option value="video">Video</option>
+                  </select>
+                </div>
+                <div class="col-md-6 mb-3">
+                  <label class="form-label">File</label>
+                  <input type="file" class="form-control" id="galleryFile" required>
+                </div>
+              </div>
+              
+              <div class="mb-3">
+                <label class="form-label">Caption</label>
+                <input type="text" class="form-control" id="galleryCaption" placeholder="Enter caption">
+              </div>
+              
+              <button type="submit" class="btn btn-primary">
+                <i class="fas fa-upload me-2"></i> Upload
+              </button>
+            </form>
+          </div>
+        </div>
+        
+        <div class="card">
+          <div class="card-header">
+            <i class="fas fa-images"></i> Gallery Items
+          </div>
+          <div class="card-body">
+            <div class="gallery-grid" id="galleryContainer">
+              <!-- Gallery items will be dynamically inserted here -->
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Notifications -->
+      <section id="notifications" class="section">
+        <div class="section-header">
+          <h2 class="section-title">Player Applications</h2>
+        </div>
+        
+        <div id="applicationsContainer">
+          <!-- Applications will be dynamically inserted here -->
+        </div>
+      </section>
       
-      <div class="card">
-        <div class="card-header">
-          <i class="fas fa-ad"></i> Upload Ads
+      <!-- Chat Room Section -->
+      <section id="chatRoom" class="section">
+        <div class="section-header">
+          <h2 class="section-title">Team Chat Room</h2>
         </div>
-        <div class="card-body">
-          <form>
-            <div class="mb-3">
-              <label class="form-label">Upload up to 3 Ad Images</label>
-              <input type="file" multiple accept="image/*" class="form-control">
-            </div>
-            
-            <div class="mb-3">
-              <label class="form-label">Ad Link (Optional)</label>
-              <input type="url" class="form-control" placeholder="https://example.com">
-            </div>
-            
-            <div class="mb-3">
-              <label class="form-label">Active Until</label>
-              <input type="date" class="form-control">
-            </div>
-            
-            <button type="button" class="btn btn-success">
-              <i class="fas fa-upload me-2"></i> Upload Ads
-            </button>
-          </form>
-        </div>
-      </div>
-      
-      <div class="card">
-        <div class="card-header">
-          <i class="fas fa-images"></i> Active Ads
-        </div>
-        <div class="card-body">
-          <div class="row">
-            <div class="col-md-4 mb-3">
-              <div class="card">
-                <img src="https://images.unsplash.com/photo-1552667466-07770ae110d0?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" class="card-img-top" alt="Ad">
-                <div class="card-body">
-                  <p class="card-text">Active until: 2023-10-15</p>
-                  <div class="d-flex justify-content-between">
-                    <button class="btn btn-sm btn-primary">
-                      <i class="fas fa-edit"></i> Edit
+        
+        <div class="card">
+          <div class="card-header">
+            <i class="fas fa-comments"></i> Team Discussion
+          </div>
+          <div class="card-body p-0 position-relative">
+            <div class="chat-container">
+              <div class="chat-header">
+                <div class="chat-info">
+                  <span><i class="fas fa-users me-2"></i> Italy Kids - Team Chat</span>
+                  <div class="online-indicator"></div>
+                  <span class="ms-2" id="onlineCount">0 online</span>
+                </div>
+                <div class="chat-actions">
+                  <button title="Search messages" onclick="toggleSearch()">
+                    <i class="fas fa-search"></i>
+                  </button>
+                  <button title="More options" onclick="showChatOptions(event)">
+                    <i class="fas fa-ellipsis-v"></i>
+                  </button>
+                  <div class="chat-options-dropdown" id="chatOptionsDropdown">
+                    <button onclick="clearChat()"><i class="fas fa-trash me-2"></i> Clear Chat</button>
+                    <button onclick="exportChat()"><i class="fas fa-download me-2"></i> Export Chat</button>
+                    <button onclick="toggleNotifications()"><i class="fas fa-bell me-2"></i> Notifications</button>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Search Modal -->
+              <div class="modal fade" id="searchModal" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title">Search Messages</h5>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                      <div class="input-group mb-3">
+                        <input type="text" class="form-control" id="searchInput" placeholder="Search for messages...">
+                        <button class="btn btn-primary" onclick="searchMessages()">
+                          <i class="fas fa-search"></i>
+                        </button>
+                      </div>
+                      <div class="search-results" id="searchResults">
+                        <!-- Search results will be displayed here -->
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Reply indicator -->
+              <div class="replying-to" id="replyingContainer" style="display: none;">
+                <i class="fas fa-reply"></i>
+                <div class="text" id="replyingText">Replying to...</div>
+                <button onclick="cancelReply()"><i class="fas fa-times"></i></button>
+              </div>
+              
+              <div class="chat-messages" id="chatMessages">
+                <div class="text-center py-4">
+                  <div class="loading-spinner mx-auto"></div>
+                  <p class="mt-2">Loading messages...</p>
+                </div>
+              </div>
+              
+              <div class="chat-scroll-indicator" id="scrollToBottom" onclick="scrollToBottom()">
+                <i class="fas fa-arrow-down"></i>
+              </div>
+              
+              <div class="chat-typing" id="typingIndicator" style="display: none;">
+                <span id="typingText"></span>
+              </div>
+              
+              <div class="media-preview-container" id="mediaPreviewContainer">
+                <!-- Media preview will be inserted here -->
+              </div>
+              
+              <!-- Emoji Picker -->
+              <div class="emoji-picker-container" id="emojiPickerContainer">
+                <emoji-picker></emoji-picker>
+              </div>
+              
+              <div class="chat-input-container">
+                <div class="chat-input-wrapper">
+                  <input type="text" class="chat-input" id="messageInput" placeholder="Type your message here..." onkeypress="handleTyping(event)">
+                  <div class="chat-input-actions">
+                    <button type="button" title="Add emoji" onclick="toggleEmojiPicker()">
+                      <i class="far fa-smile"></i>
                     </button>
-                    <button class="btn btn-sm btn-danger">
-                      <i class="fas fa-trash"></i> Delete
+                    <input type="file" id="mediaUpload" class="hidden" accept="image/*,video/*" multiple>
+                    <button type="button" title="Attach file" onclick="document.getElementById('mediaUpload').click()">
+                      <i class="fas fa-paperclip"></i>
                     </button>
                   </div>
                 </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Gallery -->
-    <section id="gallery" class="section">
-      <div class="section-header">
-        <h2 class="section-title">Gallery Management</h2>
-      </div>
-      
-      <div class="card">
-        <div class="card-header">
-          <i class="fas fa-upload"></i> Upload Media
-        </div>
-        <div class="card-body">
-          <form>
-            <div class="row">
-              <div class="col-md-6 mb-3">
-                <label class="form-label">Media Type</label>
-                <select class="form-select">
-                  <option value="pic">Picture</option>
-                  <option value="video">Video</option>
-                </select>
-              </div>
-              <div class="col-md-6 mb-3">
-                <label class="form-label">File</label>
-                <input type="file" class="form-control">
-              </div>
-            </div>
-            
-            <div class="mb-3">
-              <label class="form-label">Caption</label>
-              <input type="text" class="form-control" placeholder="Enter caption">
-            </div>
-            
-            <button type="button" class="btn btn-primary">
-              <i class="fas fa-upload me-2"></i> Upload
-            </button>
-          </form>
-        </div>
-      </div>
-      
-      <div class="card">
-        <div class="card-header">
-          <i class="fas fa-images"></i> Gallery Items
-        </div>
-        <div class="card-body">
-          <div class="gallery-grid">
-            <div class="gallery-item">
-              <img src="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" alt="Gallery">
-              <div class="gallery-actions">
-                <button title="Edit">
-                  <i class="fas fa-edit"></i>
-                </button>
-                <button title="Delete">
-                  <i class="fas fa-trash text-danger"></i>
-                </button>
-              </div>
-            </div>
-            
-            <div class="gallery-item">
-              <img src="https://images.unsplash.com/photo-1529900748604-07564a03e7a6?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" alt="Gallery">
-              <div class="gallery-actions">
-                <button title="Edit">
-                  <i class="fas fa-edit"></i>
-                </button>
-                <button title="Delete">
-                  <i class="fas fa-trash text-danger"></i>
-                </button>
-              </div>
-            </div>
-            
-            <div class="gallery-item">
-              <img src="https://images.unsplash.com/photo-1599058917765-a780eda07a3e?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" alt="Gallery">
-              <div class="gallery-actions">
-                <button title="Edit">
-                  <i class="fas fa-edit"></i>
-                </button>
-                <button title="Delete">
-                  <i class="fas fa-trash text-danger"></i>
+                <button type="button" class="send-button" id="sendMessageBtn" onclick="sendMessage()">
+                  <i class="fas fa-paper-plane"></i>
                 </button>
               </div>
             </div>
           </div>
         </div>
-      </div>
-    </section>
-
-    <!-- Notifications -->
-    <section id="notifications" class="section">
-      <div class="section-header">
-        <h2 class="section-title">Player Applications</h2>
-      </div>
-      
-      <div class="notification-item">
-        <div class="notification-header" onclick="toggleNotification(this)">
-          <span>Mohammed Aminu</span>
-          <i class="fas fa-chevron-down"></i>
-        </div>
-        <div class="notification-content">
-          <p><strong>Email:</strong> mohammed@example.com</p>
-          <p><strong>Phone:</strong> +255 123 456 789</p>
-          <p><strong>Position:</strong> Forward</p>
-          <p><strong>Message:</strong> I would like to join the team! I have 3 years of experience playing in local tournaments.</p>
-          <div class="mt-3">
-            <button class="btn btn-success btn-sm">
-              <i class="fas fa-check me-1"></i> Approve
-            </button>
-            <button class="btn btn-danger btn-sm">
-              <i class="fas fa-times me-1"></i> Reject
-            </button>
-          </div>
-        </div>
-      </div>
-      
-      <div class="notification-item">
-        <div class="notification-header" onclick="toggleNotification(this)">
-          <span>David Wilson</span>
-          <i class="fas fa-chevron-down"></i>
-        </div>
-        <div class="notification-content">
-          <p><strong>Email:</strong> david@example.com</p>
-          <p><strong>Phone:</strong> +255 987 654 321</p>
-          <p><strong>Position:</strong> Goalkeeper</p>
-          <p><strong>Message:</strong> I'm interested in trying out for the goalkeeper position. I have trained with Coach Sele previously.</p>
-          <div class="mt-3">
-            <button class="btn btn-success btn-sm">
-              <i class="fas fa-check me-1"></i> Approve
-            </button>
-            <button class="btn btn-danger btn-sm">
-              <i class="fas fa-times me-1"></i> Reject
-            </button>
-          </div>
-        </div>
-      </div>
-    </section>
+      </section>
+    </div>
   </main>
 
+  <!-- Add Achievement Modal -->
+  <div class="modal fade" id="addAchievementModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Add Player Achievement</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form id="addAchievementForm">
+            <div class="mb-3">
+              <label class="form-label">Player</label>
+              <select class="form-select" id="achievementPlayer" required>
+                <option value="">Select Player</option>
+                <!-- Players will be populated dynamically -->
+              </select>
+            </div>
+            
+            <div class="mb-3">
+              <label class="form-label">Achievement Title</label>
+              <input type="text" class="form-control" id="achievementTitle" placeholder="Enter achievement title" required>
+            </div>
+            
+            <div class="mb-3">
+              <label class="form-label">Description</label>
+              <textarea class="form-control" id="achievementDescription" rows="3" placeholder="Describe the achievement..."></textarea>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="button" class="btn btn-primary" onclick="addAchievement()">Add Achievement</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Edit Achievement Modal -->
+  <div class="modal fade" id="editAchievementModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Edit Achievement</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form id="editAchievementForm">
+            <input type="hidden" id="editAchievementId">
+            <div class="mb-3">
+              <label class="form-label">Player</label>
+              <select class="form-select" id="editAchievementPlayer" required>
+                <option value="">Select Player</option>
+                <!-- Players will be populated dynamically -->
+              </select>
+            </div>
+            
+            <div class="mb-3">
+              <label class="form-label">Achievement Title</label>
+              <input type="text" class="form-control" id="editAchievementTitle" placeholder="Enter achievement title" required>
+            </div>
+            
+            <div class="mb-3">
+              <label class="form-label">Description</label>
+              <textarea class="form-control" id="editAchievementDescription" rows="3" placeholder="Describe the achievement..."></textarea>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="button" class="btn btn-primary" onclick="updateAchievement()">Update Achievement</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add Training Modal -->
+  <div class="modal fade" id="addTrainingModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Schedule Training Session</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form id="addTrainingForm">
+            <div class="mb-3">
+              <label class="form-label">Day of Week</label>
+              <select class="form-select" id="day_of_week" required>
+                <option value="">Select Day</option>
+                <option value="Monday">Monday</option>
+                <option value="Tuesday">Tuesday</option>
+                <option value="Wednesday">Wednesday</option>
+                <option value="Thursday">Thursday</option>
+                <option value="Friday">Friday</option>
+                <option value="Saturday">Saturday</option>
+                <option value="Sunday">Sunday</option>
+              </select>
+            </div>
+            
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label class="form-label">Start Time</label>
+                <input type="time" class="form-control" id="start_time" required>
+              </div>
+              <div class="col-md-6 mb-3">
+                <label class="form-label">End Time</label>
+                <input type="time" class="form-control" id="end_time" required>
+              </div>
+            </div>
+            
+            <div class="mb-3">
+              <label class="form-label">Notes (Optional)</label>
+              <textarea class="form-control" id="training_notes" rows="3" placeholder="Any additional notes..."></textarea>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="button" class="btn btn-primary" onclick="addTraining()">Schedule Training</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add Match Modal -->
+  <div class="modal fade" id="addMatchModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Plan a Match</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form id="addMatchForm">
+            <div class="mb-3">
+              <label class="form-label">Opponent Team</label>
+              <input type="text" class="form-control" id="opponent" placeholder="Enter opponent team name" required>
+            </div>
+            
+            <div class="mb-3">
+              <label class="form-label">Match Date & Time</label>
+              <input type="datetime-local" class="form-control" id="match_datetime" required>
+            </div>
+            
+            <div class="mb-3">
+              <label class="form-label">Location</label>
+              <input type="text" class="form-control" id="location" placeholder="Enter match location" required>
+            </div>
+            
+            <div class="mb-3">
+              <label class="form-label">Notes (Optional)</label>
+              <textarea class="form-control" id="match_notes" rows="3" placeholder="Any additional notes..."></textarea>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="button" class="btn btn-primary" onclick="addMatch()">Plan Match</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Progress Update Modal -->
+  <div class="modal fade" id="progressModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Update Player Progress</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form id="updateProgressForm">
+            <input type="hidden" id="progressPlayerId">
+            <div class="mb-3">
+              <label class="form-label">Training Level (0-100)</label>
+              <input type="range" class="form-range" id="trainingLevel" min="0" max="100" step="1" oninput="updateRangeValue('trainingLevelValue', this.value)">
+              <div class="d-flex justify-content-between">
+                <span>0</span>
+                <span id="trainingLevelValue">50</span>
+                <span>100</span>
+              </div>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Speed (0-100)</label>
+              <input type="range" class="form-range" id="speed" min="0" max="100" step="1" oninput="updateRangeValue('speedValue', this.value)">
+              <div class="d-flex justify-content-between">
+                <span>0</span>
+                <span id="speedValue">50</span>
+                <span>100</span>
+              </div>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Behavior (0-100)</label>
+              <input type="range" class="form-range" id="behavior" min="0" max="100" step="1" oninput="updateRangeValue('behaviorValue', this.value)">
+              <div class="d-flex justify-content-between">
+                <span>0</span>
+                <span id="behaviorValue">50</span>
+                <span>100</span>
+              </div>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Performance (0-100)</label>
+              <input type="range" class="form-range" id="performance" min="0" max="100" step="1" oninput="updateRangeValue('performanceValue', this.value)">
+              <div class="d-flex justify-content-between">
+                <span>0</span>
+                <span id="performanceValue">50</span>
+                <span>100</span>
+              </div>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="button" class="btn btn-primary" onclick="submitProgressUpdate()">Save Changes</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- Emoji Picker -->
+  <script type="module" src="https://cdn.jsdelivr.net/npm/emoji-picker-element@1.12.0/dist/emoji-picker.min.js"></script>
+  
   <script>
+    // API Configuration
+    const API_BASE = 'http://localhost:5000/api';
+    const AUTH_TOKEN = localStorage.getItem('authToken');
+    let currentEditMessageId = null;
+    let chatRefreshInterval = null;
+    let currentMediaFiles = [];
+    let replyingToMessage = null;
+    let lastMessageId = null;
+    let isNearBottom = true;
+    let isLoadingMessages = false;
+    let hasMoreMessages = true;
+    let typingTimeout = null;
+    let usersTyping = {};
+    let scrollPositionBeforeLoad = null;
+    
+    // DOM Elements
+    const elements = {
+      toastContainer: document.getElementById('toastContainer'),
+      captainNameDisplay: document.getElementById('captainNameDisplay'),
+      playersContainer: document.getElementById('playersContainer'),
+      playerSearch: document.getElementById('playerSearch'),
+      achievementsContainer: document.getElementById('achievementsContainer'),
+      trainingContainer: document.getElementById('trainingContainer'),
+      matchesContainer: document.getElementById('matchesContainer'),
+      adsContainer: document.getElementById('adsContainer'),
+      galleryContainer: document.getElementById('galleryContainer'),
+      applicationsContainer: document.getElementById('applicationsContainer'),
+      upcomingEvents: document.getElementById('upcomingEvents'),
+      recentNotifications: document.getElementById('recentNotifications'),
+      chatMessages: document.getElementById('chatMessages'),
+      messageInput: document.getElementById('messageInput'),
+      sendMessageBtn: document.getElementById('sendMessageBtn'),
+      mediaUpload: document.getElementById('mediaUpload'),
+      replyingContainer: document.getElementById('replyingContainer'),
+      replyingText: document.getElementById('replyingText'),
+      mediaPreviewContainer: document.getElementById('mediaPreviewContainer'),
+      scrollToBottom: document.getElementById('scrollToBottom'),
+      typingIndicator: document.getElementById('typingIndicator'),
+      typingText: document.getElementById('typingText'),
+      playersCount: document.getElementById('playersCount'),
+      trainingCount: document.getElementById('trainingCount'),
+      matchesCount: document.getElementById('matchesCount'),
+      notificationsCount: document.getElementById('notificationsCount'),
+      onlineCount: document.getElementById('onlineCount'),
+      emojiPickerContainer: document.getElementById('emojiPickerContainer'),
+      chatOptionsDropdown: document.getElementById('chatOptionsDropdown'),
+      searchInput: document.getElementById('searchInput'),
+      searchResults: document.getElementById('searchResults')
+    };
+
     // Section navigation
     function showSection(id) {
       // Hide all sections
@@ -802,13 +1935,37 @@
       document.getElementById(id).classList.add('active');
       
       // Update active button
-      document.querySelectorAll('.sidebar-nav button').forEach(button => {
-        button.classList.remove('active');
+      document.querySelectorAll('.nav-link').forEach(link => {
+        link.classList.remove('active');
       });
       
-      event.currentTarget.classList.add('active');
+      // Find and activate the corresponding nav link
+      const navLinks = document.querySelectorAll('.nav-link');
+      for (let link of navLinks) {
+        if (link.getAttribute('onclick')?.includes(id)) {
+          link.classList.add('active');
+          break;
+        }
+      }
+      
+      // Load data when switching to specific sections
+      const sectionLoaders = {
+        'viewPlayers': loadPlayers,
+        'achievements': () => { loadAchievements(); populatePlayerDropdown(); },
+        'ads': loadAds,
+        'gallery': loadGallery,
+        'notifications': loadApplications,
+        'dashboard': () => { updateDashboardStats(); loadUpcomingEvents(); },
+        'training': loadTrainingSessions,
+        'matches': loadMatches,
+        'chatRoom': () => { loadChatMessages(); startChatRefresh(); initChat(); }
+      };
+      
+      if (sectionLoaders[id]) {
+        sectionLoaders[id]();
+      }
     }
-    
+
     // Toggle notification details
     function toggleNotification(element) {
       const content = element.nextElementSibling;
@@ -824,6 +1981,2108 @@
         icon.classList.add('fa-chevron-down');
       }
     }
+    
+    // Show toast notification
+    function showToast(message, type = 'info') {
+      const toast = document.createElement('div');
+      toast.className = `toast ${type}`;
+      toast.innerHTML = `
+        <span>${message}</span>
+        <button onclick="this.parentElement.remove()">
+          <i class="fas fa-times"></i>
+        </button>
+      `;
+      elements.toastContainer.appendChild(toast);
+      
+      // Auto remove after 5 seconds
+      setTimeout(() => {
+        if (toast.parentElement) {
+          toast.remove();
+        }
+      }, 5000);
+    }
+
+    // Update range value display
+    function updateRangeValue(elementId, value) {
+      document.getElementById(elementId).textContent = value;
+    }
+    
+    // Check authentication
+    function checkAuthentication() {
+      if (!AUTH_TOKEN) {
+        window.location.href = 'login.html';
+        return false;
+      }
+      return true;
+    }
+    
+    // Load captain's name
+    function loadCaptainName() {
+      const username = localStorage.getItem('username') || 'Captain';
+      elements.captainNameDisplay.textContent = username;
+    }
+    
+    // Handle logout
+    function handleLogout() {
+      localStorage.removeItem('authToken');
+      localStorage.removeItem('username');
+      localStorage.removeItem('userId');
+      window.location.href = 'login.html';
+    }
+    
+    // Add Player Form Submission
+    document.getElementById('addPlayerForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      
+      const formData = new FormData();
+      formData.append('fullname', document.getElementById('fullname').value);
+      formData.append('username', document.getElementById('username').value);
+      formData.append('phone', document.getElementById('phone').value);
+      formData.append('position', document.getElementById('position').value);
+      
+      const profilePic = document.getElementById('profile_pic').files[0];
+      if (profilePic) {
+        formData.append('profile_pic', profilePic);
+      }
+      
+      try {
+        const response = await fetch(`${API_BASE}/players/add`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${AUTH_TOKEN}`
+          },
+          body: formData
+        });
+        
+        const data = await response.json();
+        
+        if (response.ok) {
+          showToast('Player added successfully!', 'success');
+          document.getElementById('addPlayerForm').reset();
+          // Update dashboard stats
+          updateDashboardStats();
+        } else {
+          showToast(data.error || 'Failed to add player', 'error');
+        }
+      } catch (error) {
+        showToast('Error adding player: ' + error.message, 'error');
+      }
+    });
+    
+    // Load Players
+    async function loadPlayers() {
+      try {
+        elements.playersContainer.innerHTML = `
+          <div class="col-12 text-center py-4">
+            <div class="loading-spinner mx-auto"></div>
+            <p class="mt-2">Loading players...</p>
+          </div>
+        `;
+        
+        const response = await fetch(`${API_BASE}/players/all`, {
+          headers: {
+            'Authorization': `Bearer ${AUTH_TOKEN}`
+          }
+        });
+        
+        if (!response.ok) {
+          throw new Error(`Failed to fetch players: ${response.status}`);
+        }
+        
+        const players = await response.json();
+        elements.playersContainer.innerHTML = '';
+        
+        if (players.length === 0) {
+          elements.playersContainer.innerHTML = '<div class="col-12"><p class="text-center">No players found.</p></div>';
+          return;
+        }
+        
+        players.forEach(player => {
+          const progress = player.training_level !== null ? player : {
+            training_level: 0,
+            speed: 0,
+            behavior: 0,
+            performance: 0
+          };
+          
+          const playerCard = document.createElement('div');
+          playerCard.className = 'col-lg-6 mb-4';
+          playerCard.innerHTML = `
+            <div class="card player-card" data-player-id="${player.user_id}">
+              <div class="card-header">
+                <i class="fas fa-user"></i> ${player.fullname}
+                <div>
+                  <button class="btn btn-sm btn-primary me-2" onclick="openProgressModal(${player.user_id})">
+                    <i class="fas fa-chart-line"></i> Progress
+                  </button>
+                  <button class="btn btn-sm btn-danger" onclick="deletePlayer(${player.user_id})">
+                    <i class="fas fa-trash"></i> Delete
+                  </button>
+                </div>
+              </div>
+              <div class="card-body">
+                <div class="player-stats">
+                  <div class="stat-item">
+                    <div class="stat-label">
+                      <span>Training</span>
+                      <span>${progress.training_level}%</span>
+                    </div>
+                    <div class="progress">
+                      <div class="progress-bar" style="width: ${progress.training_level}%; background: #27ae60;">${progress.training_level}%</div>
+                    </div>
+                  </div>
+                  
+                  <div class="stat-item">
+                    <div class="stat-label">
+                      <span>Speed</span>
+                      <span>${progress.speed}%</span>
+                    </div>
+                    <div class="progress">
+                      <div class="progress-bar" style="width: ${progress.speed}%; background: #2980b9;">${progress.speed}%</div>
+                    </div>
+                  </div>
+                  
+                  <div class="stat-item">
+                    <div class="stat-label">
+                      <span>Behavior</span>
+                      <span>${progress.behavior}%</span>
+                    </div>
+                    <div class="progress">
+                      <div class="progress-bar" style="width: ${progress.behavior}%; background: #f39c12;">${progress.behavior}%</div>
+                    </div>
+                  </div>
+                  
+                  <div class="stat-item">
+                    <div class="stat-label">
+                      <span>Performance</span>
+                      <span>${progress.performance}%</span>
+                    </div>
+                    <div class="progress">
+                      <div class="progress-bar" style="width: ${progress.performance}%; background: #8e44ad;">${progress.performance}%</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          `;
+          elements.playersContainer.appendChild(playerCard);
+        });
+      } catch (error) {
+        showToast('Error loading players: ' + error.message, 'error');
+      }
+    }
+    
+    // Filter Players
+    function filterPlayers() {
+      const searchTerm = elements.playerSearch.value.toLowerCase();
+      const playerCards = document.querySelectorAll('.player-card');
+      
+      playerCards.forEach(card => {
+        const playerName = card.querySelector('.card-header').textContent.toLowerCase();
+        if (playerName.includes(searchTerm)) {
+          card.style.display = '';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    }
+    
+    // Delete Player
+    async function deletePlayer(playerId) {
+      if (!confirm('Are you sure you want to delete this player?')) return;
+      
+      try {
+        const response = await fetch(`${API_BASE}/players/delete/${playerId}`, {
+          method: 'DELETE',
+          headers: {
+            'Authorization': `Bearer ${AUTH_TOKEN}`
+          }
+        });
+        
+        if (response.ok) {
+          showToast('Player deleted successfully!', 'success');
+          loadPlayers(); // Reload the player list
+          updateDashboardStats();
+        } else {
+          const data = await response.json();
+          showToast(data.error || 'Failed to delete player', 'error');
+        }
+      } catch (error) {
+        showToast('Error deleting player: ' + error.message, 'error');
+      }
+    }
+    
+    // Open Progress Modal
+    function openProgressModal(playerId) {
+      document.getElementById('progressPlayerId').value = playerId;
+      
+      // Set default values or fetch existing progress
+      document.getElementById('trainingLevel').value = 50;
+      document.getElementById('trainingLevelValue').textContent = 50;
+      document.getElementById('speed').value = 50;
+      document.getElementById('speedValue').textContent = 50;
+      document.getElementById('behavior').value = 50;
+      document.getElementById('behaviorValue').textContent = 50;
+      document.getElementById('performance').value = 50;
+      document.getElementById('performanceValue').textContent = 50;
+      
+      // Show the modal
+      const modal = new bootstrap.Modal(document.getElementById('progressModal'));
+      modal.show();
+    }
+    
+    // Submit Progress Update
+    async function submitProgressUpdate() {
+      const playerId = document.getElementById('progressPlayerId').value;
+      const trainingLevel = document.getElementById('trainingLevel').value;
+      const speed = document.getElementById('speed').value;
+      const behavior = document.getElementById('behavior').value;
+      const performance = document.getElementById('performance').value;
+      
+      try {
+        const response = await fetch(`${API_BASE}/players/progress/${playerId}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${AUTH_TOKEN}`
+          },
+          body: JSON.stringify({
+            training_level: trainingLevel,
+            speed: speed,
+            behavior: behavior,
+            performance: performance
+          })
+        });
+        
+        if (response.ok) {
+          showToast('Player progress updated successfully!', 'success');
+          
+          // Close the modal
+          const modal = bootstrap.Modal.getInstance(document.getElementById('progressModal'));
+          modal.hide();
+          
+          // Reload players to show updated progress
+          loadPlayers();
+        } else {
+          const data = await response.json();
+          showToast(data.error || 'Failed to update progress', 'error');
+        }
+      } catch (error) {
+        showToast('Error updating progress: ' + error.message, 'error');
+      }
+    }
+    
+    // Load Achievements
+    async function loadAchievements() {
+      try {
+        elements.achievementsContainer.innerHTML = `
+          <div class="text-center py-4">
+            <div class="loading-spinner mx-auto"></div>
+            <p class="mt-2">Loading achievements...</p>
+          </div>
+        `;
+        
+        const response = await fetch(`${API_BASE}/achievements`, {
+          headers: {
+            'Authorization': `Bearer ${AUTH_TOKEN}`
+          }
+        });
+        
+        if (!response.ok) {
+          throw new Error(`Failed to fetch achievements: ${response.status}`);
+        }
+        
+        const achievements = await response.json();
+        elements.achievementsContainer.innerHTML = '';
+        
+        if (achievements.length === 0) {
+          elements.achievementsContainer.innerHTML = '<div class="text-center py-4"><p>No achievements found.</p></div>';
+          return;
+        }
+        
+        achievements.forEach(achievement => {
+          const achievementDate = new Date(achievement.created_at).toLocaleDateString();
+          
+          const achievementCard = document.createElement('div');
+          achievementCard.className = 'card achievement-card mb-3';
+          achievementCard.innerHTML = `
+            <div class="card-body">
+              <div class="achievement-header">
+                <div>
+                  <div class="achievement-title">${achievement.title}</div>
+                  <div class="achievement-player">
+                    <i class="fas fa-user me-1"></i> ${achievement.username}
+                    ${achievement.phone ? `• ${achievement.phone}` : ''}
+                  </div>
+                </div>
+                <div class="achievement-date">${achievementDate}</div>
+              </div>
+              
+              <div class="achievement-description">${achievement.description || 'No description provided.'}</div>
+              
+              <div class="achievement-actions">
+                <button class="btn btn-sm btn-primary" onclick="openEditAchievementModal(${achievement.achievement_id}, ${achievement.player_id}, '${achievement.title.replace(/'/g, "\\'")}', '${(achievement.description || '').replace(/'/g, "\\'")}')">
+                  <i class="fas fa-edit me-1"></i> Edit
+                </button>
+                <button class="btn btn-sm btn-danger" onclick="deleteAchievement(${achievement.achievement_id})">
+                  <i class="fas fa-trash me-1"></i> Delete
+                </button>
+              </div>
+            </div>
+          `;
+          elements.achievementsContainer.appendChild(achievementCard);
+        });
+      } catch (error) {
+        showToast('Error loading achievements: ' + error.message, 'error');
+      }
+    }
+    
+    // Populate player dropdown for achievements
+    async function populatePlayerDropdown() {
+      try {
+        const response = await fetch(`${API_BASE}/players/all`, {
+          headers: {
+            'Authorization': `Bearer ${AUTH_TOKEN}`
+          }
+        });
+        
+        if (!response.ok) {
+          throw new Error(`Failed to fetch players: ${response.status}`);
+        }
+        
+        const players = await response.json();
+        const playerDropdown = document.getElementById('achievementPlayer');
+        const editPlayerDropdown = document.getElementById('editAchievementPlayer');
+        
+        // Clear existing options except the first one
+        while (playerDropdown.options.length > 1) {
+          playerDropdown.remove(1);
+        }
+        while (editPlayerDropdown.options.length > 1) {
+          editPlayerDropdown.remove(1);
+        }
+        
+        // Add players to dropdown
+        players.forEach(player => {
+          const option = document.createElement('option');
+          option.value = player.user_id;
+          option.textContent = `${player.fullname} (${player.username})`;
+          
+          playerDropdown.appendChild(option.cloneNode(true));
+          editPlayerDropdown.appendChild(option);
+        });
+      } catch (error) {
+        showToast('Error loading players: ' + error.message, 'error');
+      }
+    }
+    
+    // Add Achievement
+    async function addAchievement() {
+      const playerId = document.getElementById('achievementPlayer').value;
+      const title = document.getElementById('achievementTitle').value;
+      const description = document.getElementById('achievementDescription').value;
+      
+      if (!playerId || !title) {
+        showToast('Please select a player and enter a title', 'error');
+        return;
+      }
+      
+      try {
+        const response = await fetch(`${API_BASE}/achievements`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${AUTH_TOKEN}`
+          },
+          body: JSON.stringify({
+            player_id: playerId,
+            title: title,
+            description: description
+          })
+        });
+        
+        const data = await response.json();
+        
+        if (response.ok) {
+          showToast('Achievement added successfully!', 'success');
+          // Close modal
+          const modal = bootstrap.Modal.getInstance(document.getElementById('addAchievementModal'));
+          modal.hide();
+          // Reset form
+          document.getElementById('addAchievementForm').reset();
+          // Reload achievements
+          loadAchievements();
+        } else {
+          showToast(data.message || 'Failed to add achievement', 'error');
+        }
+      } catch (error) {
+        showToast('Error adding achievement: ' + error.message, 'error');
+      }
+    }
+    
+    // Open Edit Achievement Modal
+    function openEditAchievementModal(achievementId, playerId, title, description) {
+      document.getElementById('editAchievementId').value = achievementId;
+      document.getElementById('editAchievementPlayer').value = playerId;
+      document.getElementById('editAchievementTitle').value = title;
+      document.getElementById('editAchievementDescription').value = description;
+      
+      // Show the modal
+      const modal = new bootstrap.Modal(document.getElementById('editAchievementModal'));
+      modal.show();
+    }
+    
+    // Update Achievement
+    async function updateAchievement() {
+      const achievementId = document.getElementById('editAchievementId').value;
+      const playerId = document.getElementById('editAchievementPlayer').value;
+      const title = document.getElementById('editAchievementTitle').value;
+      const description = document.getElementById('editAchievementDescription').value;
+      
+      if (!playerId || !title) {
+        showToast('Please select a player and enter a title', 'error');
+        return;
+      }
+      
+      try {
+        const response = await fetch(`${API_BASE}/achievements/${achievementId}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${AUTH_TOKEN}`
+          },
+          body: JSON.stringify({
+            player_id: playerId,
+            title: title,
+            description: description
+          })
+        });
+        
+        const data = await response.json();
+        
+        if (response.ok) {
+          showToast('Achievement updated successfully!', 'success');
+          // Close modal
+          const modal = bootstrap.Modal.getInstance(document.getElementById('editAchievementModal'));
+          modal.hide();
+          // Reload achievements
+          loadAchievements();
+        } else {
+          showToast(data.message || 'Failed to update achievement', 'error');
+        }
+      } catch (error) {
+        showToast('Error updating achievement: ' + error.message, 'error');
+      }
+    }
+    
+    // Delete Achievement
+    async function deleteAchievement(achievementId) {
+      if (!confirm('Are you sure you want to delete this achievement?')) return;
+      
+      try {
+        const response = await fetch(`${API_BASE}/achievements/${achievementId}`, {
+          method: 'DELETE',
+          headers: {
+            'Authorization': `Bearer ${AUTH_TOKEN}`
+          }
+        });
+        
+        if (response.ok) {
+          showToast('Achievement deleted successfully!', 'success');
+          loadAchievements();
+        } else {
+          const data = await response.json();
+          showToast(data.message || 'Failed to delete achievement', 'error');
+        }
+      } catch (error) {
+        showToast('Error deleting achievement: ' + error.message, 'error');
+      }
+    }
+    
+    // Add Training
+    async function addTraining() {
+      const day_of_week = document.getElementById('day_of_week').value;
+      const start_time = document.getElementById('start_time').value;
+      const end_time = document.getElementById('end_time').value;
+      const notes = document.getElementById('training_notes').value;
+      
+      if (!day_of_week || !start_time || !end_time) {
+        showToast('Please fill all required fields', 'error');
+        return;
+      }
+      
+      try {
+        const response = await fetch(`${API_BASE}/training`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${AUTH_TOKEN}`
+          },
+          body: JSON.stringify({
+            day_of_week: day_of_week,
+            start_time: start_time,
+            end_time: end_time,
+            notes: notes
+          })
+        });
+        
+        const data = await response.json();
+        
+        if (response.ok) {
+          showToast('Training session scheduled successfully!', 'success');
+          // Close modal
+          const modal = bootstrap.Modal.getInstance(document.getElementById('addTrainingModal'));
+          modal.hide();
+          // Reset form
+          document.getElementById('addTrainingForm').reset();
+          // Reload training sessions
+          loadTrainingSessions();
+          // Update dashboard stats
+          updateDashboardStats();
+        } else {
+          showToast(data.message || 'Failed to schedule training', 'error');
+        }
+      } catch (error) {
+        showToast('Error scheduling training: ' + error.message, 'error');
+      }
+    }
+    
+    // Load Training Sessions
+    async function loadTrainingSessions() {
+      try {
+        elements.trainingContainer.innerHTML = `
+          <div class="text-center py-4">
+            <div class="loading-spinner mx-auto"></div>
+            <p class="mt-2">Loading training sessions...</p>
+          </div>
+        `;
+        
+        const response = await fetch(`${API_BASE}/training`, {
+          headers: {
+            'Authorization': `Bearer ${AUTH_TOKEN}`
+          }
+        });
+        
+        if (!response.ok) {
+          throw new Error(`Failed to fetch training sessions: ${response.status}`);
+        }
+        
+        const trainings = await response.json();
+        elements.trainingContainer.innerHTML = '';
+        
+        if (trainings.length === 0) {
+          elements.trainingContainer.innerHTML = '<div class="text-center py-4"><p>No training sessions scheduled yet.</p></div>';
+          return;
+        }
+        
+        trainings.forEach(training => {
+          const trainingCard = document.createElement('div');
+          trainingCard.className = 'card training-card mb-3';
+          trainingCard.innerHTML = `
+            <div class="card-body">
+              <div class="d-flex justify-content-between align-items-center">
+                <div>
+                  <h5 class="card-title">${training.day_of_week} Training</h5>
+                  <p class="training-time mb-1">${training.start_time} - ${training.end_time}</p>
+                  ${training.notes ? `<p class="training-notes">${training.notes}</p>` : ''}
+                </div>
+                <div>
+                  <button class="btn btn-sm btn-outline-danger" onclick="deleteTraining(${training.id})">
+                    <i class="fas fa-trash"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+            </div>
+          `;
+          elements.trainingContainer.appendChild(trainingCard);
+        });
+      } catch (error) {
+        showToast('Error loading training sessions: ' + error.message, 'error');
+      }
+    }
+    
+    // Delete Training
+    async function deleteTraining(trainingId) {
+      if (!confirm('Are you sure you want to delete this training session?')) return;
+      
+      try {
+        const response = await fetch(`${API_BASE}/training/${trainingId}`, {
+          method: 'DELETE',
+          headers: {
+            'Authorization': `Bearer ${AUTH_TOKEN}`
+          }
+        });
+        
+        if (response.ok) {
+          showToast('Training session deleted successfully!', 'success');
+          loadTrainingSessions();
+          updateDashboardStats();
+        } else {
+          const data = await response.json();
+          showToast(data.message || 'Failed to delete training session', 'error');
+        }
+      } catch (error) {
+        showToast('Error deleting training session: ' + error.message, 'error');
+      }
+    }
+    
+    // Add Match
+    async function addMatch() {
+      const opponent = document.getElementById('opponent').value;
+      const match_datetime = document.getElementById('match_datetime').value;
+      const location = document.getElementById('location').value;
+      const notes = document.getElementById('match_notes').value;
+      
+      if (!opponent || !match_datetime || !location) {
+        showToast('Please fill all required fields', 'error');
+        return;
+      }
+      
+      try {
+        const response = await fetch(`${API_BASE}/matches`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${AUTH_TOKEN}`
+          },
+          body: JSON.stringify({
+            opponent: opponent,
+            match_datetime: match_datetime,
+            location: location,
+            notes: notes
+          })
+        });
+        
+        const data = await response.json();
+        
+        if (response.ok) {
+          showToast('Match planned successfully!', 'success');
+          // Close modal
+          const modal = bootstrap.Modal.getInstance(document.getElementById('addMatchModal'));
+          modal.hide();
+          // Reset form
+          document.getElementById('addMatchForm').reset();
+          // Reload matches
+          loadMatches();
+          // Update dashboard stats
+          updateDashboardStats();
+        } else {
+          showToast(data.message || 'Failed to plan match', 'error');
+        }
+      } catch (error) {
+        showToast('Error planning match: ' + error.message, 'error');
+      }
+    }
+    
+    // Load Matches
+    async function loadMatches() {
+      try {
+        elements.matchesContainer.innerHTML = `
+          <div class="text-center py-4">
+            <div class="loading-spinner mx-auto"></div>
+            <p class="mt-2">Loading matches...</p>
+          </div>
+        `;
+        
+        const response = await fetch(`${API_BASE}/matches`, {
+          headers: {
+            'Authorization': `Bearer ${AUTH_TOKEN}`
+          }
+        });
+        
+        if (!response.ok) {
+      throw new Error(`Failed to fetch matches: ${response.status}`);
+        }
+        
+        const matches = await response.json();
+        elements.matchesContainer.innerHTML = '';
+        
+        if (matches.length === 0) {
+          elements.matchesContainer.innerHTML = '<div class="text-center py-4"><p>No matches scheduled yet.</p></div>';
+          return;
+        }
+        
+        matches.forEach(match => {
+          const matchDate = new Date(match.match_datetime);
+          const formattedDate = matchDate.toLocaleDateString();
+          const formattedTime = matchDate.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+          
+          const matchCard = document.createElement('div');
+          matchCard.className = `card match-card mb-3 ${match.status || 'planned'}`;
+          matchCard.innerHTML = `
+            <div class="card-body">
+              <div class="d-flex justify-content-between align-items-center">
+                <div>
+                  <h5 class="card-title">vs ${match.opponent}</h5>
+                  <p class="match-time mb-1">${formattedDate} at ${formattedTime}</p>
+                  <p class="match-location mb-1">${match.location}</p>
+                  ${match.notes ? `<p class="match-notes">${match.notes}</p>` : ''}
+                  ${match.status ? `<span class="badge badge-status bg-${match.status === 'completed' ? 'success' : match.status === 'cancelled' ? 'danger' : 'primary'}">${match.status}</span>` : ''}
+                </div>
+                <div>
+                  <button class="btn btn-sm btn-outline-danger" onclick="deleteMatch(${match.id})">
+                    <i class="fas fa-trash"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+          `;
+          elements.matchesContainer.appendChild(matchCard);
+        });
+      } catch (error) {
+        showToast('Error loading matches: ' + error.message, 'error');
+      }
+    }
+    
+    // Delete Match
+    async function deleteMatch(matchId) {
+      if (!confirm('Are you sure you want to delete this match?')) return;
+      
+      try {
+        const response = await fetch(`${API_BASE}/matches/${matchId}`, {
+          method: 'DELETE',
+          headers: {
+            'Authorization': `Bearer ${AUTH_TOKEN}`
+          }
+        });
+        
+        if (response.ok) {
+          showToast('Match deleted successfully!', 'success');
+          loadMatches();
+          updateDashboardStats();
+        } else {
+          const data = await response.json();
+          showToast(data.message || 'Failed to delete match', 'error');
+        }
+      } catch (error) {
+        showToast('Error deleting match: ' + error.message, 'error');
+      }
+    }
+    
+    // Load Upcoming Events (Training + Matches)
+    async function loadUpcomingEvents() {
+      try {
+        // Load training sessions
+        const trainingResponse = await fetch(`${API_BASE}/training`, {
+          headers: {
+            'Authorization': `Bearer ${AUTH_TOKEN}`
+          }
+        });
+        
+        if (!trainingResponse.ok) {
+          throw new Error(`Failed to fetch training sessions: ${trainingResponse.status}`);
+        }
+        
+        const trainings = await trainingResponse.json();
+        
+        // Load matches
+        const matchesResponse = await fetch(`${API_BASE}/matches`, {
+          headers: {
+            'Authorization': `Bearer ${AUTH_TOKEN}`
+          }
+        });
+        
+        if (!matchesResponse.ok) {
+          throw new Error(`Failed to fetch matches: ${matchesResponse.status}`);
+        }
+        
+        const matches = await matchesResponse.json();
+        elements.upcomingEvents.innerHTML = '';
+        
+        if (trainings.length === 0 && matches.length === 0) {
+          elements.upcomingEvents.innerHTML = '<div class="text-center py-4"><p>No upcoming events.</p></div>';
+          return;
+        }
+        
+        // Combine and sort events
+        const events = [];
+        
+        // Add trainings (we'll use next occurrence of each training day)
+        trainings.forEach(training => {
+          // Find next occurrence of this day
+          const today = new Date();
+          const dayIndex = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday']
+            .indexOf(training.day_of_week.toLowerCase());
+          
+          let nextDate = new Date(today);
+          nextDate.setDate(today.getDate() + ((dayIndex + 7 - today.getDay()) % 7));
+          
+          // Set time
+          const [hours, minutes] = training.start_time.split(':');
+          nextDate.setHours(parseInt(hours), parseInt(minutes), 0, 0);
+          
+          events.push({
+            type: 'training',
+            title: `${training.day_of_week} Training`,
+            datetime: nextDate,
+            time: training.start_time,
+            details: training.notes || ''
+          });
+        });
+        
+        // Add matches
+        matches.forEach(match => {
+          if (match.status !== 'completed' && match.status !== 'cancelled') {
+            events.push({
+              type: 'match',
+              title: `Match vs ${match.opponent}`,
+              datetime: new Date(match.match_datetime),
+              time: new Date(match.match_datetime).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}),
+              details: match.location
+            });
+          }
+        });
+        
+        // Sort events by date
+        events.sort((a, b) => a.datetime - b.datetime);
+        
+        // Display events (limit to 5)
+        const eventsToShow = events.slice(0, 5);
+        
+        if (eventsToShow.length === 0) {
+          elements.upcomingEvents.innerHTML = '<div class="text-center py-4"><p>No upcoming events.</p></div>';
+          return;
+        }
+        
+        eventsToShow.forEach(event => {
+          const eventDate = event.datetime.toLocaleDateString();
+          
+          const eventItem = document.createElement('div');
+          eventItem.className = `card ${event.type === 'match' ? 'match-card' : 'training-card'} mb-3`;
+          eventItem.innerHTML = `
+            <div class="card-body">
+              <div class="d-flex justify-content-between align-items-center">
+                <div>
+                  <h6 class="card-title mb-1">${event.title}</h6>
+                  <p class="mb-0 small">${eventDate} at ${event.time}</p>
+                  ${event.details ? `<p class="mb-0 small text-muted">${event.details}</p>` : ''}
+                </div>
+                <span class="badge bg-${event.type === 'match' ? 'primary' : 'success'}">${event.type}</span>
+              </div>
+            </div>
+          `;
+          elements.upcomingEvents.appendChild(eventItem);
+        });
+      } catch (error) {
+        console.error('Error loading upcoming events:', error);
+        elements.upcomingEvents.innerHTML = '<div class="text-center py-4"><p>Error loading events.</p></div>';
+      }
+    }
+    
+    // Add Ad Form Submission
+    document.getElementById('addAdForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      
+      const formData = new FormData();
+      formData.append('title', document.getElementById('adTitle').value);
+      formData.append('link', document.getElementById('adLink').value);
+      formData.append('valid_until', document.getElementById('adValidUntil').value);
+      
+      const adImage = document.getElementById('adImage').files[0];
+      if (adImage) {
+        formData.append('image', adImage);
+      }
+      
+      try {
+        const response = await fetch(`${API_BASE}/ads/add`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${AUTH_TOKEN}`
+          },
+          body: formData
+        });
+        
+        const data = await response.json();
+        
+        if (response.ok) {
+          showToast('Ad uploaded successfully!', 'success');
+          document.getElementById('addAdForm').reset();
+          loadAds();
+        } else {
+          showToast(data.error || 'Failed to upload ad', 'error');
+        }
+      } catch (error) {
+        showToast('Error uploading ad: ' + error.message, 'error');
+      }
+    });
+    
+    // Load Ads
+    async function loadAds() {
+      try {
+        elements.adsContainer.innerHTML = `
+          <div class="col-12 text-center py-4">
+            <div class="loading-spinner mx-auto"></div>
+            <p class="mt-2">Loading ads...</p>
+          </div>
+        `;
+        
+        const response = await fetch(`${API_BASE}/ads/all`, {
+          headers: {
+            'Authorization': `Bearer ${AUTH_TOKEN}`
+          }
+        });
+        
+        if (!response.ok) {
+          throw new Error(`Failed to fetch ads: ${response.status}`);
+        }
+        
+        const ads = await response.json();
+        elements.adsContainer.innerHTML = '';
+        
+        if (ads.length === 0) {
+          elements.adsContainer.innerHTML = '<div class="col-12"><p class="text-center">No ads found.</p></div>';
+          return;
+        }
+        
+        ads.forEach(ad => {
+          const adCard = document.createElement('div');
+          adCard.className = 'col-md-4 mb-3';
+          adCard.innerHTML = `
+            <div class="card">
+              <img src="${API_BASE.replace('/api', '')}/${ad.image_path}" class="card-img-top" alt="${ad.title}" style="height: 200px; object-fit: cover;">
+              <div class="card-body">
+                <h5 class="card-title">${ad.title}</h5>
+                <p class="card-text">Active until: ${new Date(ad.valid_until).toLocaleDateString()}</p>
+                <div class="d-flex justify-content-between">
+                  <a href="${ad.link}" class="btn btn-sm btn-primary" target="_blank">
+                    <i class="fas fa-external-link-alt"></i> Visit
+                  </a>
+                  <button class="btn btn-sm btn-danger" onclick="deleteAd(${ad.ad_id})">
+                    <i class="fas fa-trash"></i> Delete
+                  </button>
+                </div>
+              </div>
+            </div>
+          `;
+          elements.adsContainer.appendChild(adCard);
+        });
+      } catch (error) {
+        showToast('Error loading ads: ' + error.message, 'error');
+      }
+    }
+    
+    // Delete Ad
+    async function deleteAd(adId) {
+      if (!confirm('Are you sure you want to delete this ad?')) return;
+      
+      try {
+        const response = await fetch(`${API_BASE}/ads/delete/${adId}`, {
+          method: 'DELETE',
+          headers: {
+            'Authorization': `Bearer ${AUTH_TOKEN}`
+          }
+        });
+        
+        if (response.ok) {
+          showToast('Ad deleted successfully!', 'success');
+          loadAds();
+        } else {
+          const data = await response.json();
+          showToast(data.error || 'Failed to delete ad', 'error');
+        }
+      } catch (error) {
+        showToast('Error deleting ad: ' + error.message, 'error');
+      }
+    }
+    
+    // Upload Gallery Form Submission
+    document.getElementById('uploadGalleryForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      
+      const formData = new FormData();
+      formData.append('type', document.getElementById('mediaType').value);
+      formData.append('caption', document.getElementById('galleryCaption').value);
+      
+      const galleryFile = document.getElementById('galleryFile').files[0];
+      if (galleryFile) {
+        formData.append('file', galleryFile);
+      }
+      
+      try {
+        const response = await fetch(`${API_BASE}/gallery/upload`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${AUTH_TOKEN}`
+          },
+          body: formData
+        });
+        
+        const data = await response.json();
+        
+        if (response.ok) {
+          showToast('Media uploaded successfully!', 'success');
+          document.getElementById('uploadGalleryForm').reset();
+          loadGallery();
+        } else {
+          showToast(data.error || 'Failed to upload media', 'error');
+        }
+      } catch (error) {
+        showToast('Error uploading media: ' + error.message, 'error');
+      }
+    });
+    
+    // Load Gallery
+    async function loadGallery() {
+      try {
+        elements.galleryContainer.innerHTML = `
+          <div class="col-12 text-center py-4">
+            <div class="loading-spinner mx-auto"></div>
+            <p class="mt-2">Loading gallery items...</p>
+          </div>
+        `;
+        
+        const response = await fetch(`${API_BASE}/gallery/all`, {
+          headers: {
+            'Authorization': `Bearer ${AUTH_TOKEN}`
+          }
+        });
+        
+        if (!response.ok) {
+          throw new Error(`Failed to fetch gallery items: ${response.status}`);
+        }
+        
+        const galleryItems = await response.json();
+        elements.galleryContainer.innerHTML = '';
+        
+        if (galleryItems.length === 0) {
+          elements.galleryContainer.innerHTML = '<div class="col-12"><p class="text-center">No gallery items found.</p></div>';
+          return;
+        }
+        
+        galleryItems.forEach(item => {
+          const galleryItem = document.createElement('div');
+          galleryItem.className = 'gallery-item';
+
+          const baseUrl = API_BASE.replace('/api', '');
+          const fileUrl = `${baseUrl}/${item.file_path}`;
+
+          if (item.type === 'image') {
+            galleryItem.innerHTML = `
+              <img src="${fileUrl}" alt="${item.caption || 'Gallery image'}">
+              <div class="gallery-actions">
+                <button title="Edit Caption" onclick="editCaption(${item.gallery_id}, '${item.caption || ''}')">
+                  <i class="fas fa-edit"></i>
+                </button>
+                <button title="Delete" onclick="deleteGalleryItem(${item.gallery_id})">
+                  <i class="fas fa-trash text-danger"></i>
+                </button>
+              </div>
+            `;
+          } else {
+            galleryItem.innerHTML = `
+              <video src="${fileUrl}" controls style="width: 100%; height: 100%; object-fit: cover;"></video>
+              <div class="gallery-actions">
+                <button title="Edit Caption" onclick="editCaption(${item.gallery_id}, '${item.caption || ''}')">
+                  <i class="fas fa-edit"></i>
+                </button>
+                <button title="Delete" onclick="deleteGalleryItem(${item.gallery_id})">
+                  <i class="fas fa-trash text-danger"></i>
+                </button>
+              </div>
+            `;
+          }
+
+          elements.galleryContainer.appendChild(galleryItem);
+        });
+
+      } catch (error) {
+        showToast('Error loading gallery: ' + error.message, 'error');
+      }
+    }
+    
+    // Edit Caption
+    async function editCaption(galleryId, currentCaption) {
+      const newCaption = prompt('Enter new caption:', currentCaption);
+      if (newCaption === null) return; // User cancelled
+      
+      try {
+        const response = await fetch(`${API_BASE}/gallery/caption/${galleryId}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${AUTH_TOKEN}`
+          },
+          body: JSON.stringify({ caption: newCaption })
+        });
+        
+        if (response.ok) {
+          showToast('Caption updated successfully!', 'success');
+          loadGallery();
+        } else {
+          const data = await response.json();
+          showToast(data.error || 'Failed to update caption', 'error');
+        }
+      } catch (error) {
+        showToast('Error updating caption: ' + error.message, 'error');
+      }
+    }
+    
+    // Delete Gallery Item
+    async function deleteGalleryItem(galleryId) {
+      if (!confirm('Are you sure you want to delete this item?')) return;
+      
+      try {
+        const response = await fetch(`${API_BASE}/gallery/delete/${galleryId}`, {
+          method: 'DELETE',
+          headers: {
+            'Authorization': `Bearer ${AUTH_TOKEN}`
+          }
+        });
+        
+        if (response.ok) {
+          showToast('Gallery item deleted successfully!', 'success');
+          loadGallery();
+        } else {
+          const data = await response.json();
+          showToast(data.error || 'Failed to delete gallery item', 'error');
+        }
+      } catch ( error) {
+        showToast('Error deleting gallery item: ' + error.message, 'error');
+      }
+    }
+    
+    // Load Applications (Notifications)
+    async function loadApplications() {
+      try {
+        elements.applicationsContainer.innerHTML = `
+          <div class="col-12 text-center py-4">
+            <div class="loading-spinner mx-auto"></div>
+            <p class="mt-2">Loading applications...</p>
+          </div>
+        `;
+        
+        const response = await fetch(`${API_BASE}/notifications`, {
+          headers: {
+            'Authorization': `Bearer ${AUTH_TOKEN}`
+          }
+        });
+        
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        const notifications = data.notifications || [];
+        elements.applicationsContainer.innerHTML = '';
+        
+        if (notifications.length === 0) {
+          elements.applicationsContainer.innerHTML = '<div class="col-12"><p class="text-center">No applications found.</p></div>';
+          return;
+        }
+        
+        notifications.forEach(notification => {
+          const notificationItem = document.createElement('div');
+          notificationItem.className = 'notification-item';
+          notificationItem.innerHTML = `
+            <div class="notification-header" onclick="toggleNotification(this)">
+              <span>${notification.full_name} - ${notification.role || 'Player'}</span>
+              <i class="fas fa-chevron-down"></i>
+            </div>
+            <div class="notification-content">
+              <p><strong>Email:</strong> ${notification.email}</p>
+              <p><strong>Phone:</strong> ${notification.phone}</p>
+              <p><strong>Role:</strong> ${notification.role || 'Player'}</p>
+              <p><strong>Guardian:</strong> ${notification.guardian_name || 'N/A'} (${notification.guardian_phone || 'N/A'})</p>
+              <p><strong>Extra Info:</strong> ${notification.extra || 'No additional information'}</p>
+              <p><strong>Content:</strong> ${notification.content}</p>
+              <div class="mt-3">
+                <button class="btn btn-success btn-sm" onclick="approveApplication(${notification.id})">
+                  <i class="fas fa-check me-1"></i> Approve
+                </button>
+                <button class="btn btn-danger btn-sm" onclick="rejectApplication(${notification.id})">
+                  <i class="fas fa-times me-1"></i> Reject
+                </button>
+                <button class="btn btn-secondary btn-sm" onclick="markAsRead(${notification.id})">
+                  <i class="fas fa-eye me-1"></i> Mark as Read
+                </button>
+                <button class="btn btn-outline-danger btn-sm" onclick="deleteNotification(${notification.id})">
+                  <i class="fas fa-trash me-1"></i> Delete
+                </button>
+              </div>
+            </div>
+          `;
+          elements.applicationsContainer.appendChild(notificationItem);
+        });
+      } catch (error) {
+        showToast('Error loading applications: ' + error.message, 'error');
+      }
+    }
+    
+    // Approve Application
+    async function approveApplication(notificationId) {
+      try {
+        const response = await fetch(`${API_BASE}/notifications/approve/${notificationId}`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${AUTH_TOKEN}`
+          }
+        });
+        
+        const data = await response.json();
+        
+        if (response.ok) {
+          showToast('Application approved successfully! Email sent to applicant.', 'success');
+          loadApplications();
+          updateDashboardStats();
+        } else {
+          showToast(data.message || 'Failed to approve application', 'error');
+        }
+      } catch (error) {
+        showToast('Error approving application: ' + error.message, 'error');
+      }
+    }
+    
+    // Reject Application
+    async function rejectApplication(notificationId) {
+      try {
+        const response = await fetch(`${API_BASE}/notifications/reject/${notificationId}`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${AUTH_TOKEN}`
+          }
+        });
+        
+        const data = await response.json();
+        
+        if (response.ok) {
+          showToast('Application rejected successfully! Email sent to applicant.', 'success');
+          loadApplications();
+          updateDashboardStats();
+        } else {
+          showToast(data.message || 'Failed to reject application', 'error');
+        }
+      } catch (error) {
+        showToast('Error rejecting application: ' + error.message, 'error');
+      }
+    }
+    
+    // Mark as Read
+    async function markAsRead(notificationId) {
+      try {
+        const response = await fetch(`${API_BASE}/notifications/read`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${AUTH_TOKEN}`
+          },
+          body: JSON.stringify({ 
+            id: notificationId, 
+            isRead: 1 
+          })
+        });
+        
+        const data = await response.json();
+        
+        if (response.ok) {
+          showToast('Notification marked as read!', 'success');
+          loadApplications();
+        } else {
+          showToast(data.message || 'Failed to mark as read', 'error');
+        }
+      } catch (error) {
+        showToast('Error marking as read: ' + error.message, 'error');
+      }
+    }
+    
+    // Delete Notification
+    async function deleteNotification(notificationId) {
+      if (!confirm('Are you sure you want to delete this notification?')) return;
+      
+      try {
+        const response = await fetch(`${API_BASE}/notifications/${notificationId}`, {
+          method: 'DELETE',
+          headers: {
+            'Authorization': `Bearer ${AUTH_TOKEN}`
+          }
+        });
+        
+        if (response.ok) {
+          showToast('Notification deleted successfully!', 'success');
+          loadApplications();
+          updateDashboardStats();
+        } else {
+          const data = await response.json();
+          showToast(data.message || 'Failed to delete notification', 'error');
+        }
+      } catch (error) {
+        showToast('Error deleting notification: ' + error.message, 'error');
+      }
+    }
+
+    // Update Dashboard Statistics
+    async function updateDashboardStats() {
+      try {
+        // Get player count
+        const playersResponse = await fetch(`${API_BASE}/players/all`, {
+          headers: {
+            'Authorization': `Bearer ${AUTH_TOKEN}`
+          }
+        });
+        
+        if (!playersResponse.ok) {
+          throw new Error(`Failed to fetch players: ${playersResponse.status}`);
+        }
+        
+        const players = await playersResponse.json();
+        elements.playersCount.textContent = players.length;
+        
+        // Get notifications count
+        const notificationsResponse = await fetch(`${API_BASE}/notifications`, {
+          headers: {
+            'Authorization': `Bearer ${AUTH_TOKEN}`
+          }
+        });
+        
+        if (!notificationsResponse.ok) {
+          throw new Error(`Failed to fetch notifications: ${notificationsResponse.status}`);
+        }
+        
+        const notificationsData = await notificationsResponse.json();
+        const notifications = notificationsData.notifications || [];
+        elements.notificationsCount.textContent = notifications.length;
+        
+        // Get training count
+        const trainingResponse = await fetch(`${API_BASE}/training`, {
+          headers: {
+            'Authorization': `Bearer ${AUTH_TOKEN}`
+          }
+        });
+        
+        if (!trainingResponse.ok) {
+          throw new Error(`Failed to fetch training sessions: ${trainingResponse.status}`);
+        }
+        
+        const trainings = await trainingResponse.json();
+        elements.trainingCount.textContent = trainings.length;
+        
+        // Get matches count
+        const matchesResponse = await fetch(`${API_BASE}/matches`, {
+          headers: {
+            'Authorization': `Bearer ${AUTH_TOKEN}`
+          }
+        });
+        
+        if (!matchesResponse.ok) {
+          throw new Error(`Failed to fetch matches: ${matchesResponse.status}`);
+        }
+        
+        const matches = await matchesResponse.json();
+        // Count only upcoming matches (not completed or cancelled)
+        const upcomingMatches = matches.filter(match => 
+          match.status !== 'completed' && match.status !== 'cancelled'
+        );
+        elements.matchesCount.textContent = upcomingMatches.length;
+        
+        // Update recent notifications
+        elements.recentNotifications.innerHTML = '';
+        
+        if (notifications.length === 0) {
+          elements.recentNotifications.innerHTML = '<p class="text-center">No recent notifications</p>';
+        } else {
+          // Show only the 3 most recent notifications
+          const recentNotifications = notifications.slice(0, 3);
+          
+          recentNotifications.forEach(notification => {
+            const alert = document.createElement('div');
+            alert.className = 'alert alert-primary';
+            alert.innerHTML = `
+              <i class="fas fa-info-circle me-2"></i> 
+              New application from ${notification.full_name}
+            `;
+            elements.recentNotifications.appendChild(alert);
+          });
+        }
+        
+      } catch (error) {
+        console.error('Error updating dashboard stats:', error);
+        showToast('Error loading dashboard statistics', 'error');
+      }
+    }
+
+    // Load chat messages with incremental loading
+    async function loadChatMessages(loadMore = false) {
+      if (isLoadingMessages) return;
+      
+      isLoadingMessages = true;
+      
+      try {
+        let url = `${API_BASE}/chat`;
+        if (loadMore && lastMessageId) {
+          url += `?before=${lastMessageId}&limit=20`;
+        } else if (!loadMore) {
+          // Reset for initial load
+          lastMessageId = null;
+          hasMoreMessages = true;
+        }
+        
+        const response = await fetch(url, {
+          headers: { 'Authorization': `Bearer ${AUTH_TOKEN}` }
+        });
+
+        if (!response.ok) {
+          throw new Error(`Failed to fetch chat messages: ${response.status}`);
+        }
+
+        const data = await response.json();
+        const messages = data.messages || [];
+        
+        if (messages.length === 0) {
+          if (!loadMore) {
+            elements.chatMessages.innerHTML = '<div class="text-center py-4"><p>No messages yet. Start the conversation!</p></div>';
+          }
+          hasMoreMessages = false;
+          isLoadingMessages = false;
+          return;
+        }
+
+        // For initial load, clear the container
+        if (!loadMore) {
+          elements.chatMessages.innerHTML = '';
+          
+          // Add load more button if there are more messages
+          if (messages.length >= 20) {
+            const loadMoreBtn = document.createElement('div');
+            loadMoreBtn.className = 'chat-load-more';
+            loadMoreBtn.innerHTML = `
+              <button class="btn btn-sm btn-outline-primary" onclick="loadChatMessages(true)">
+                <i class="fas fa-history me-1"></i> Load older messages
+              </button>
+            `;
+            elements.chatMessages.appendChild(loadMoreBtn);
+          }
+        }
+
+        // Save scroll position before adding new messages
+        if (loadMore) {
+          scrollPositionBeforeLoad = {
+            scrollHeight: elements.chatMessages.scrollHeight,
+            scrollTop: elements.chatMessages.scrollTop
+          };
+        }
+
+        // Group messages by date
+        const messagesByDate = {};
+        let firstMessageId = null;
+        
+        messages.forEach(message => {
+          const messageDate = new Date(message.created_at).toDateString();
+          if (!messagesByDate[messageDate]) {
+            messagesByDate[messageDate] = [];
+          }
+          messagesByDate[messageDate].push(message);
+          
+          // Track the first and last message IDs
+          if (!firstMessageId) firstMessageId = message.id;
+          lastMessageId = message.id;
+        });
+
+        // Add messages to chat
+        Object.keys(messagesByDate).forEach(date => {
+          // Check if date divider already exists
+          let dateDivider = document.getElementById(`divider-${date}`);
+          if (!dateDivider) {
+            dateDivider = document.createElement('div');
+            dateDivider.id = `divider-${date}`;
+            dateDivider.className = 'chat-date-divider';
+            dateDivider.textContent = new Date(date).toLocaleDateString('en-US', { 
+              weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' 
+            });
+            
+            if (loadMore) {
+              // Prepend for older messages (after the load more button)
+              const loadMoreBtn = elements.chatMessages.querySelector('.chat-load-more');
+              if (loadMoreBtn) {
+                elements.chatMessages.insertBefore(dateDivider, loadMoreBtn.nextSibling);
+              } else {
+                elements.chatMessages.insertBefore(dateDivider, elements.chatMessages.firstChild);
+              }
+            } else {
+              // Append for new messages
+              elements.chatMessages.appendChild(dateDivider);
+            }
+          }
+
+          // Add messages for this date
+          messagesByDate[date].forEach(message => {
+            const msgEl = createMessageElement(message);
+            
+            if (loadMore) {
+              // Insert older messages at the top (after the load more button)
+              const loadMoreBtn = elements.chatMessages.querySelector('.chat-load-more');
+              if (loadMoreBtn) {
+                elements.chatMessages.insertBefore(msgEl, loadMoreBtn.nextSibling);
+              } else {
+                elements.chatMessages.insertBefore(msgEl, elements.chatMessages.firstChild);
+              }
+            } else {
+              // Append new messages at the bottom
+              elements.chatMessages.appendChild(msgEl);
+            }
+          });
+        });
+
+        // Adjust scroll position for load more
+        if (loadMore && scrollPositionBeforeLoad) {
+          const newScrollHeight = elements.chatMessages.scrollHeight;
+          elements.chatMessages.scrollTop = newScrollHeight - scrollPositionBeforeLoad.scrollHeight + scrollPositionBeforeLoad.scrollTop;
+        } else if (!loadMore && isNearBottom) {
+          // Scroll to bottom for new messages if user was near bottom
+          scrollToBottom();
+        }
+        
+        // Update load more button visibility
+        updateLoadMoreButton();
+
+      } catch (error) {
+        showToast('Error loading messages: ' + error.message, 'error');
+      } finally {
+        isLoadingMessages = false;
+      }
+    }
+    
+    // Update load more button based on available messages
+    function updateLoadMoreButton() {
+      const loadMoreBtn = elements.chatMessages.querySelector('.chat-load-more');
+      
+      if (loadMoreBtn) {
+        if (!hasMoreMessages) {
+          loadMoreBtn.innerHTML = '<span class="text-muted">No older messages</span>';
+          loadMoreBtn.querySelector('button').disabled = true;
+        }
+      }
+    }
+    
+    // Create message element
+    function createMessageElement(message) {
+      const messageDiv = document.createElement('div');
+      const isCurrentUser = message.sender_id === parseInt(localStorage.getItem('userId'));
+      
+      messageDiv.className = `message ${isCurrentUser ? 'sent' : 'received'}`;
+      messageDiv.id = `message-${message.id}`;
+      
+      const messageTime = new Date(message.created_at).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+      
+      let mediaHtml = '';
+      if (message.media_url) {
+        const mediaUrl = `${API_BASE.replace('/api', '')}/${message.media_url}`;
+        if (message.media_type === 'video') {
+          mediaHtml = `<div><video src="${mediaUrl}" controls class="chat-media-preview"></video></div>`;
+        } else {
+          mediaHtml = `<div><img src="${mediaUrl}" alt="Chat media" class="chat-media-preview"></div>`;
+        }
+      }
+      
+      // Check if this is a reply
+      let replyHtml = '';
+      if (message.reply_to) {
+        replyHtml = `
+          <div class="message-reply">
+            <div class="reply-info">Replying to ${message.reply_to_username || 'a message'}</div>
+            <div class="message-reply-content">${message.reply_to_content || 'Click to view'}</div>
+          </div>
+        `;
+      }
+      
+      messageDiv.innerHTML = `
+        <div class="message-info">
+          <div class="message-sender">${message.sender_username}</div>
+          <div class="message-time">${messageTime}</div>
+        </div>
+        <div class="message-bubble">
+          ${replyHtml}
+          ${message.message ? `<div>${formatMessageText(message.message)}</div>` : ''}
+          ${mediaHtml}
+          <div class="message-menu">
+            ${isCurrentUser ? `
+              <button onclick="editMessage(${message.id})"><i class="fas fa-edit me-1"></i> Edit</button>
+              <button onclick="deleteMessage(${message.id})"><i class="fas fa-trash me-1"></i> Delete</button>
+            ` : `
+              <button onclick="replyToMessage(${message.id}, '${message.sender_username}', '${escapeHtml(message.message || '')}')">
+                <i class="fas fa-reply me-1"></i> Reply
+              </button>
+            `}
+          </div>
+        </div>
+      `;
+      
+      return messageDiv;
+    }
+    
+    // Format message text (convert URLs to links and preserve emojis)
+    function formatMessageText(text) {
+      // Convert URLs to clickable links
+      const urlRegex = /(https?:\/\/[^\s]+)/g;
+      return text.replace(urlRegex, url => {
+        return `<a href="${url}" target="_blank" class="message-link">${url}</a>`;
+      });
+    }
+    
+    // Helper function to escape HTML
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+    
+    // Handle media selection
+    function handleMediaSelect(event) {
+      const files = Array.from(event.target.files);
+      if (files.length === 0) return;
+      
+      currentMediaFiles = files;
+      
+      // Clear previous preview
+      elements.mediaPreviewContainer.innerHTML = '';
+      elements.mediaPreviewContainer.style.display = 'block';
+      
+      files.forEach(file => {
+        const previewDiv = document.createElement('div');
+        previewDiv.className = 'media-preview';
+        
+        if (file.type.startsWith('image/')) {
+          const img = document.createElement('img');
+          img.src = URL.createObjectURL(file);
+          previewDiv.appendChild(img);
+        } else if (file.type.startsWith('video/')) {
+          const video = document.createElement('video');
+          video.src = URL.createObjectURL(file);
+          video.controls = true;
+          previewDiv.appendChild(video);
+        }
+        
+        const removeBtn = document.createElement('button');
+        removeBtn.className = 'remove-media';
+        removeBtn.innerHTML = '<i class="fas fa-times"></i>';
+        removeBtn.onclick = function() {
+          previewDiv.remove();
+          currentMediaFiles = currentMediaFiles.filter(f => f !== file);
+          if (currentMediaFiles.length === 0) {
+            elements.mediaPreviewContainer.style.display = 'none';
+            elements.mediaUpload.value = '';
+          }
+        };
+        
+        previewDiv.appendChild(removeBtn);
+        elements.mediaPreviewContainer.appendChild(previewDiv);
+      });
+    }
+    
+    // Send message (text or media)
+    async function sendMessage() {
+      const message = elements.messageInput.value.trim();
+      
+      if (!message && currentMediaFiles.length === 0 && !replyingToMessage) {
+        showToast('Please enter a message or select a file', 'error');
+        return;
+      }
+      
+      try {
+        const formData = new FormData();
+        if (message) {
+          formData.append('message', message);
+        }
+        
+        // Add all media files
+        currentMediaFiles.forEach(file => {
+          formData.append('media', file);
+        });
+        
+        if (replyingToMessage) {
+          formData.append('reply_to', replyingToMessage.id);
+        }
+        
+        const response = await fetch(`${API_BASE}/chat`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${AUTH_TOKEN}`
+          },
+          body: formData
+        });
+        
+        const data = await response.json();
+        
+        if (response.ok) {
+          // Clear input and media
+          elements.messageInput.value = '';
+          elements.mediaUpload.value = '';
+          elements.mediaPreviewContainer.innerHTML = '';
+          elements.mediaPreviewContainer.style.display = 'none';
+          currentMediaFiles = [];
+          
+          // Cancel any reply
+          cancelReply();
+          
+          // Reload messages to show the new message
+          loadChatMessages();
+          
+          showToast('Message sent successfully', 'success');
+        } else {
+          showToast(data.message || 'Failed to send message', 'error');
+        }
+      } catch (error) {
+        showToast('Error sending message: ' + error.message, 'error');
+      }
+    }
+    
+    // Handle typing indicator
+    function handleTyping(event) {
+      if (event.key === 'Enter') {
+        event.preventDefault();
+        sendMessage();
+        return;
+      }
+      
+      // Send typing indicator to server
+      sendTypingIndicator();
+      
+      // Clear previous timeout
+      if (typingTimeout) {
+        clearTimeout(typingTimeout);
+      }
+      
+      // Set new timeout
+      typingTimeout = setTimeout(() => {
+        // Typing stopped
+      }, 1000);
+    }
+    
+    // Send typing indicator to server
+    async function sendTypingIndicator() {
+      try {
+        await fetch(`${API_BASE}/chat/typing`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${AUTH_TOKEN}`
+          },
+          body: JSON.stringify({ typing: true })
+        });
+      } catch (error) {
+        console.error('Error sending typing indicator:', error);
+      }
+    }
+    
+    // Check for typing indicators from other users
+    async function checkTypingIndicators() {
+      try {
+        const response = await fetch(`${API_BASE}/chat/typing`, {
+          headers: { 'Authorization': `Bearer ${AUTH_TOKEN}` }
+        });
+        
+        if (response.ok) {
+          const data = await response.json();
+          updateTypingIndicator(data.typing || {});
+        }
+      } catch (error) {
+        console.error('Error checking typing indicators:', error);
+      }
+    }
+    
+    // Update typing indicator UI
+    function updateTypingIndicator(typingData) {
+      const currentUserId = parseInt(localStorage.getItem('userId'));
+      const typingUsers = Object.entries(typingData)
+        .filter(([userId, timestamp]) => 
+          parseInt(userId) !== currentUserId && 
+          Date.now() - new Date(timestamp).getTime() < 3000
+        )
+        .map(([userId]) => userId);
+      
+      if (typingUsers.length > 0) {
+        // Get usernames for typing users (in a real app, you'd have this data)
+        elements.typingText.textContent = `${typingUsers.length} user${typingUsers.length > 1 ? 's' : ''} typing...`;
+        elements.typingIndicator.style.display = 'block';
+      } else {
+        elements.typingIndicator.style.display = 'none';
+      }
+    }
+    
+    // Scroll to bottom of chat
+    function scrollToBottom() {
+      elements.chatMessages.scrollTop = elements.chatMessages.scrollHeight;
+      hideScrollIndicator();
+    }
+    
+    // Show/hide scroll indicator based on scroll position
+    function toggleScrollIndicator() {
+      const chatContainer = elements.chatMessages;
+      isNearBottom = chatContainer.scrollHeight - chatContainer.scrollTop <= chatContainer.clientHeight + 100;
+      
+      if (isNearBottom) {
+        hideScrollIndicator();
+      } else {
+        showScrollIndicator();
+      }
+    }
+    
+    // Show scroll to bottom indicator
+    function showScrollIndicator() {
+      elements.scrollToBottom.classList.add('visible');
+    }
+    
+    // Hide scroll to bottom indicator
+    function hideScrollIndicator() {
+      elements.scrollToBottom.classList.remove('visible');
+    }
+    
+    // Start auto-refreshing chat messages
+    function startChatRefresh() {
+      // Clear any existing interval
+      if (chatRefreshInterval) {
+        clearInterval(chatRefreshInterval);
+      }
+      
+      // Load messages immediately
+      loadChatMessages();
+      
+      // Set up intervals
+      chatRefreshInterval = setInterval(() => {
+        loadChatMessages();
+        checkTypingIndicators();
+      }, 3000);
+    }
+    
+    // Stop auto-refreshing chat messages
+    function stopChatRefresh() {
+      if (chatRefreshInterval) {
+        clearInterval(chatRefreshInterval);
+        chatRefreshInterval = null;
+      }
+    }
+    
+    // Toggle emoji picker
+    function toggleEmojiPicker() {
+      elements.emojiPickerContainer.classList.toggle('visible');
+      
+      // Set up emoji picker event listener
+      const picker = document.querySelector('emoji-picker');
+      if (picker && !picker.hasEventListener) {
+        picker.addEventListener('emoji-click', event => {
+          elements.messageInput.value += event.detail.unicode;
+          elements.messageInput.focus();
+          elements.emojiPickerContainer.classList.remove('visible');
+        });
+        picker.hasEventListener = true;
+      }
+    }
+    
+    // Show chat options dropdown
+    function showChatOptions(event) {
+      event.stopPropagation();
+      elements.chatOptionsDropdown.classList.toggle('visible');
+      
+      // Close dropdown when clicking outside
+      document.addEventListener('click', function closeDropdown(e) {
+        if (!elements.chatOptionsDropdown.contains(e.target) && e.target !== event.target) {
+          elements.chatOptionsDropdown.classList.remove('visible');
+          document.removeEventListener('click', closeDropdown);
+        }
+      });
+    }
+    
+    // Toggle search modal
+    function toggleSearch() {
+      const searchModal = new bootstrap.Modal(document.getElementById('searchModal'));
+      searchModal.show();
+    }
+    
+    // Search messages
+    async function searchMessages() {
+      const query = elements.searchInput.value.trim();
+      if (!query) return;
+      
+      try {
+        const response = await fetch(`${API_BASE}/chat/search?q=${encodeURIComponent(query)}`, {
+          headers: { 'Authorization': `Bearer ${AUTH_TOKEN}` }
+        });
+        
+        if (!response.ok) {
+          throw new Error(`Failed to search messages: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        const results = data.messages || [];
+        
+        elements.searchResults.innerHTML = '';
+        
+        if (results.length === 0) {
+          elements.searchResults.innerHTML = '<div class="text-center p-3">No messages found</div>';
+          return;
+        }
+        
+        results.forEach(message => {
+          const messageTime = new Date(message.created_at).toLocaleString();
+          const resultItem = document.createElement('div');
+          resultItem.className = 'search-result-item';
+          resultItem.innerHTML = `
+            <div class="fw-bold">${message.sender_username}</div>
+            <div class="small text-muted">${messageTime}</div>
+            <div>${message.message || '[Media message]'}</div>
+          `;
+          resultItem.addEventListener('click', () => {
+            // Scroll to the message
+            const messageElement = document.getElementById(`message-${message.id}`);
+            if (messageElement) {
+              messageElement.scrollIntoView({ behavior: 'smooth' });
+              messageElement.classList.add('highlight');
+              setTimeout(() => messageElement.classList.remove('highlight'), 2000);
+            }
+            bootstrap.Modal.getInstance(document.getElementById('searchModal')).hide();
+          });
+          
+          elements.searchResults.appendChild(resultItem);
+        });
+      } catch (error) {
+        showToast('Error searching messages: ' + error.message, 'error');
+      }
+    }
+    
+    // Clear chat
+    async function clearChat() {
+      if (!confirm('Are you sure you want to clear all chat messages? This cannot be undone.')) return;
+      
+      try {
+        const response = await fetch(`${API_BASE}/chat/clear`, {
+          method: 'DELETE',
+          headers: { 'Authorization': `Bearer ${AUTH_TOKEN}` }
+        });
+        
+        if (response.ok) {
+          showToast('Chat cleared successfully', 'success');
+          loadChatMessages();
+        } else {
+          showToast('Failed to clear chat', 'error');
+        }
+      } catch (error) {
+        showToast('Error clearing chat: ' + error.message, 'error');
+      }
+    }
+    
+    // Export chat
+    async function exportChat() {
+      try {
+        const response = await fetch(`${API_BASE}/chat/export`, {
+          headers: { 'Authorization': `Bearer ${AUTH_TOKEN}` }
+        });
+        
+        if (!response.ok) {
+          throw new Error(`Failed to export chat: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        const chatData = JSON.stringify(data, null, 2);
+        
+        // Create download link
+        const blob = new Blob([chatData], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `chat-export-${new Date().toISOString().split('T')[0]}.json`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        
+        showToast('Chat exported successfully', 'success');
+      } catch (error) {
+        showToast('Error exporting chat: ' + error.message, 'error');
+      }
+    }
+    
+    // Toggle notifications
+    function toggleNotifications() {
+      // This would typically be implemented with a backend API
+      showToast('Notification settings would be updated here', 'info');
+    }
+    
+    // Reply to a message
+    function replyToMessage(messageId, username, content) {
+      replyingToMessage = { id: messageId, username, content };
+      elements.replyingContainer.style.display = 'flex';
+      elements.replyingText.textContent = `${username}: ${content.substring(0, 50)}${content.length > 50 ? '...' : ''}`;
+      elements.messageInput.focus();
+    }
+    
+    // Cancel reply
+    function cancelReply() {
+      replyingToMessage = null;
+      elements.replyingContainer.style.display = 'none';
+    }
+    
+    // Edit message
+    async function editMessage(messageId) {
+      // Implementation for editing a message
+      showToast('Edit message functionality would be implemented here', 'info');
+    }
+    
+    // Delete message
+    async function deleteMessage(messageId) {
+      if (!confirm('Are you sure you want to delete this message?')) return;
+      
+      try {
+        const response = await fetch(`${API_BASE}/chat/${messageId}`, {
+          method: 'DELETE',
+          headers: { 'Authorization': `Bearer ${AUTH_TOKEN}` }
+        });
+        
+        if (response.ok) {
+          showToast('Message deleted successfully', 'success');
+          loadChatMessages();
+        } else {
+          showToast('Failed to delete message', 'error');
+        }
+      } catch (error) {
+        showToast('Error deleting message: ' + error.message, 'error');
+      }
+    }
+    
+    // Initialize chat functionality
+    function initChat() {
+      // Set up event listeners
+      elements.mediaUpload.addEventListener('change', handleMediaSelect);
+      
+      elements.chatMessages.addEventListener('scroll', toggleScrollIndicator);
+      
+      // Close emoji picker when clicking outside
+      document.addEventListener('click', function(e) {
+        if (!elements.emojiPickerContainer.contains(e.target) && 
+            !e.target.closest('.chat-input-actions button')) {
+          elements.emojiPickerContainer.classList.remove('visible');
+        }
+      });
+      
+      // Start chat refresh
+      startChatRefresh();
+    }
+    
+    // Initialize the page
+    document.addEventListener('DOMContentLoaded', function() {
+      // Check authentication
+      if (!checkAuthentication()) return;
+      
+      // Load captain's name
+      loadCaptainName();
+      
+      // Set up logout button
+      document.getElementById('logoutBtn').addEventListener('click', handleLogout);
+      
+      // Initialize chat when chat room is shown
+      const originalShowSection = showSection;
+      showSection = function(id) {
+        originalShowSection(id);
+        
+        if (id === 'chatRoom') {
+          initChat();
+        } else {
+          stopChatRefresh();
+        }
+      };
+      
+      // Load initial data for dashboard
+      updateDashboardStats();
+      loadUpcomingEvents();
+    });
   </script>
 </body>
 </html>

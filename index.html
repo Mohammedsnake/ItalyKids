@@ -7,6 +7,8 @@
   <!-- Bootstrap CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+  <!-- Country code selector CSS -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/css/intlTelInput.css">
   <style>
     /* General */
     :root {
@@ -47,6 +49,7 @@
     .navbar {
       box-shadow: 0 2px 10px rgba(0,0,0,0.1);
       padding: 12px 0;
+      transition: all 0.3s ease;
     }
     
     .navbar-brand {
@@ -93,7 +96,7 @@
     /* Hero Section */
     .hero {
       background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.7)), 
-                  url('https://images.unsplash.com/photo-1508766206392-8bd5cf550d1d?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&q=80') 
+                  url('https://images.unsplash.com/photo-1508098682722-e99c43a406b2?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&q=80') 
                   no-repeat center center/cover;
       height: 100vh;
       color: white;
@@ -232,6 +235,115 @@
       padding: 25px 0;
     }
     
+    /* Loading spinner */
+    .btn-loading .btn-text {
+      visibility: hidden;
+      opacity: 0;
+    }
+    
+    .btn-loading::after {
+      content: "";
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      margin: auto;
+      border: 3px solid transparent;
+      border-top-color: #ffffff;
+      border-radius: 50%;
+      animation: button-loading-spinner 1s ease infinite;
+    }
+    
+    @keyframes button-loading-spinner {
+      from { transform: rotate(0turn); }
+      to { transform: rotate(1turn); }
+    }
+    
+    /* Toast notifications */
+    .toast-container {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 9999;
+    }
+    
+    .toast {
+      background-color: var(--primary);
+      color: white;
+      padding: 12px 20px;
+      border-radius: 8px;
+      margin-bottom: 10px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      animation: slideIn 0.3s ease-out;
+    }
+    
+    .toast.error {
+      background-color: #dc3545;
+    }
+    
+    .toast.success {
+      background-color: var(--accent);
+    }
+    
+    .toast button {
+      background: transparent;
+      border: none;
+      color: inherit;
+      margin-left: 15px;
+      cursor: pointer;
+    }
+    
+    @keyframes slideIn {
+      from { transform: translateX(100%); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+    
+    /* Form validation */
+    .is-invalid {
+      border-color: #dc3545 !important;
+    }
+    
+    .invalid-feedback {
+      display: none;
+      width: 100%;
+      margin-top: 0.25rem;
+      font-size: 0.875em;
+      color: #dc3545;
+    }
+    
+    .was-validated .form-control:invalid ~ .invalid-feedback,
+    .form-control.is-invalid ~ .invalid-feedback {
+      display: block;
+    }
+
+    /* Phone input styling */
+    .phone-input-container {
+      position: relative;
+    }
+    
+    .country-code-select {
+      position: absolute;
+      left: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 3;
+      width: 80px;
+      background: transparent;
+      border: none;
+      color: #6c757d;
+      font-weight: 500;
+    }
+    
+    .phone-with-code {
+      padding-left: 100px !important;
+    }
+    
     /* Responsive Adjustments */
     @media (max-width: 768px) {
       .hero h1 {
@@ -245,10 +357,23 @@
       .section-title {
         font-size: 1.8rem;
       }
+
+      .country-code-select {
+        left: 12px;
+        width: 70px;
+        font-size: 0.9rem;
+      }
+      
+      .phone-with-code {
+        padding-left: 85px !important;
+      }
     }
   </style>
 </head>
 <body>
+
+  <!-- Toast notifications container -->
+  <div class="toast-container" id="toastContainer"></div>
 
   <!-- Navbar -->
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
@@ -257,7 +382,7 @@
         <div class="logo-placeholder">IK</div>
         Italy Kids FC
       </a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navMenu">
@@ -387,21 +512,24 @@
       <p class="text-center lead mb-5">Fill out the form below and start your journey with us.</p>
       <div class="row justify-content-center">
         <div class="col-lg-10">
-          <form id="registrationForm" class="p-4 p-md-5 border rounded shadow-sm bg-light">
+          <form id="registrationForm" class="p-4 p-md-5 border rounded shadow-sm bg-light" novalidate>
             <div class="row">
               <div class="col-md-6 mb-3">
                 <label class="form-label fw-semibold">Full Name</label>
                 <input type="text" class="form-control" id="name" required>
+                <div class="invalid-feedback">Please provide your full name.</div>
               </div>
               <div class="col-md-6 mb-3">
                 <label class="form-label fw-semibold">Age</label>
-                <input type="number" class="form-control" id="age" required>
+                <input type="number" class="form-control" id="age" min="5" max="25" required>
+                <div class="invalid-feedback">Please provide a valid age (5-25).</div>
               </div>
             </div>
             
             <div class="mb-3">
               <label class="form-label fw-semibold">Address</label>
               <input type="text" class="form-control" id="address" required>
+              <div class="invalid-feedback">Please provide your address.</div>
             </div>
             
             <div class="row">
@@ -413,23 +541,54 @@
                   <option value="Coach">Coach</option>
                   <option value="Manager">Manager</option>
                 </select>
+                <div class="invalid-feedback">Please select a role.</div>
               </div>
 
               <!-- Position/Sector dynamic -->
               <div class="col-md-6 mb-3 d-none" id="extraField">
                 <label class="form-label fw-semibold" id="extraLabel"></label>
-                <select class="form-select" id="extraSelect"></select>
+                <select class="form-select" id="extraSelect" required>
+                  <option value="">Please select</option>
+                </select>
+                <div class="invalid-feedback">Please select an option.</div>
               </div>
             </div>
 
             <div class="row">
               <div class="col-md-6 mb-3">
                 <label class="form-label fw-semibold">Phone Number</label>
-                <input type="tel" class="form-control" id="phone" required>
+                <div class="phone-input-container">
+                  <select class="country-code-select" id="phoneCode">
+                    <option value="+255">+255 (TZ)</option>
+                    <option value="+1">+1 (US)</option>
+                    <option value="+44">+44 (UK)</option>
+                    <option value="+91">+91 (IN)</option>
+                    <option value="+86">+86 (CN)</option>
+                    <option value="+81">+81 (JP)</option>
+                    <option value="+49">+49 (DE)</option>
+                    <option value="+33">+33 (FR)</option>
+                    <option value="+39">+39 (IT)</option>
+                    <option value="+34">+34 (ES)</option>
+                    <option value="+7">+7 (RU)</option>
+                    <option value="+55">+55 (BR)</option>
+                    <option value="+27">+27 (ZA)</option>
+                    <option value="+20">+20 (EG)</option>
+                    <option value="+234">+234 (NG)</option>
+                    <option value="+254">+254 (KE)</option>
+                    <option value="+256">+256 (UG)</option>
+                    <option value="+250">+250 (RW)</option>
+                    <option value="+257">+257 (BI)</option>
+                  </select>
+                  <input type="tel" class="form-control phone-with-code" id="phone" pattern="[0-9]{7,12}" 
+                         placeholder="677 532 140" required>
+                </div>
+                <div class="invalid-feedback">Please provide a valid phone number.</div>
+                <small class="form-text text-muted">Enter your phone number without country code</small>
               </div>
               <div class="col-md-6 mb-3">
                 <label class="form-label fw-semibold">Email</label>
                 <input type="email" class="form-control" id="email" required>
+                <div class="invalid-feedback">Please provide a valid email address.</div>
               </div>
             </div>
 
@@ -437,14 +596,49 @@
               <div class="col-md-6 mb-3">
                 <label class="form-label fw-semibold">Parent/Guardian Name</label>
                 <input type="text" class="form-control" id="guardianName" required>
+                <div class="invalid-feedback">Please provide guardian's name.</div>
               </div>
               <div class="col-md-6 mb-3">
                 <label class="form-label fw-semibold">Parent/Guardian Phone</label>
-                <input type="tel" class="form-control" id="guardianPhone" required>
+                <div class="phone-input-container">
+                  <select class="country-code-select" id="guardianPhoneCode">
+                    <option value="+255">+255 (TZ)</option>
+                    <option value="+1">+1 (US)</option>
+                    <option value="+44">+44 (UK)</option>
+                    <option value="+91">+91 (IN)</option>
+                    <option value="+86">+86 (CN)</option>
+                    <option value="+81">+81 (JP)</option>
+                    <option value="+49">+49 (DE)</option>
+                    <option value="+33">+33 (FR)</option>
+                    <option value="+39">+39 (IT)</option>
+                    <option value="+34">+34 (ES)</option>
+                    <option value="+7">+7 (RU)</option>
+                    <option value="+55">+55 (BR)</option>
+                    <option value="+27">+27 (ZA)</option>
+                    <option value="+20">+20 (EG)</option>
+                    <option value="+234">+234 (NG)</option>
+                    <option value="+254">+254 (KE)</option>
+                    <option value="+256">+256 (UG)</option>
+                    <option value="+250">+250 (RW)</option>
+                    <option value="+257">+257 (BI)</option>
+                  </select>
+                  <input type="tel" class="form-control phone-with-code" id="guardianPhone" 
+                         pattern="[0-9]{7,12}" placeholder="677 532 140" required>
+                </div>
+                <div class="invalid-feedback">Please provide guardian's valid phone number.</div>
               </div>
             </div>
+            <div class="mb-3">
+              <label class="form-label fw-semibold">Message (Optional)</label>
+              <textarea class="form-control" id="message" rows="3" placeholder="Enter your message here..."></textarea>
+            </div>
 
-            <button type="submit" class="btn btn-success w-100 py-3 fw-bold mt-3">Submit Application <i class="ms-2 fas fa-paper-plane"></i></button>
+            <button type="submit" class="btn btn-success w-100 py-3 fw-bold mt-3 position-relative" id="submitBtn">
+              <span class="btn-text">Submit Application <i class="ms-2 fas fa-paper-plane"></i></span>
+              <span class="btn-loading d-none">
+                <span class="loading"></span> Processing...
+              </span>
+            </button>
           </form>
         </div>
       </div>
@@ -480,10 +674,10 @@
     <div class="container">
       <p class="mb-0">&copy; 2025 Italy Kids Football Club. All Rights Reserved.</p>
       <div class="mt-2">
-        <a href="#" class="text-white me-3"><i class="fab fa-facebook-f"></i></a>
-        <a href="#" class="text-white me-3"><i class="fab fa-twitter"></i></a>
-        <a href="#" class="text-white me-3"><i class="fab fa-instagram"></i></a>
-        <a href="#" class="text-white"><i class="fab fa-youtube"></i></a>
+        <a href="#" class="text-white me-3" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+        <a href="#" class="text-white me-3" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+        <a href="#" class="text-white me-3" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+        <a href="#" class="text-white" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
       </div>
     </div>
   </footer>
@@ -491,50 +685,256 @@
   <!-- Bootstrap JS -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <script>
-    const roleSelect = document.getElementById("role");
-    const extraField = document.getElementById("extraField");
-    const extraLabel = document.getElementById("extraLabel");
-    const extraSelect = document.getElementById("extraSelect");
+  // ==============================
+  // Toast Notification
+  // ==============================
+  function showToast(message, type = 'info') {
+    const toastContainer = document.getElementById('toastContainer');
+    if (!toastContainer) return;
 
+    const toast = document.createElement('div');
+    toast.className = `toast ${type}`;
+    toast.innerHTML = `
+      <span>${message}</span>
+      <button onclick="this.parentElement.remove()">
+        <i class="fas fa-times"></i>
+      </button>
+    `;
+    toastContainer.appendChild(toast);
+
+    // Auto remove after 5 seconds
+    setTimeout(() => {
+      if (toast.parentElement) toast.remove();
+    }, 5000);
+  }
+
+  // ==============================
+  // Submit Button Loading State
+  // ==============================
+  function setSubmittingState(isSubmitting) {
+    const submitBtn = document.getElementById('submitBtn');
+    if (!submitBtn) return;
+
+    const btnText = submitBtn.querySelector('.btn-text');
+    const btnLoading = submitBtn.querySelector('.btn-loading');
+
+    if (isSubmitting) {
+      btnText?.classList.add('d-none');
+      btnLoading?.classList.remove('d-none');
+      submitBtn.disabled = true;
+      submitBtn.classList.add('btn-loading');
+    } else {
+      btnText?.classList.remove('d-none');
+      btnLoading?.classList.add('d-none');
+      submitBtn.disabled = false;
+      submitBtn.classList.remove('btn-loading');
+    }
+  }
+
+  // ==============================
+  // Dynamic Extra Field (Role)
+  // ==============================
+  const roleSelect = document.getElementById("role");
+  const extraField = document.getElementById("extraField");
+  const extraLabel = document.getElementById("extraLabel");
+  const extraSelect = document.getElementById("extraSelect");
+
+  if (roleSelect) {
     roleSelect.addEventListener("change", () => {
-      extraSelect.innerHTML = ""; // clear options
+      extraSelect.innerHTML = '<option value="">Please select</option>';
+
       if (roleSelect.value === "Player") {
         extraLabel.textContent = "Preferred Position";
-        ["Goalkeeper","Defender","Midfielder","Forward"].forEach(opt=>{
-          extraSelect.innerHTML += `<option>${opt}</option>`;
+        ["Goalkeeper", "Defender", "Midfielder", "Forward"].forEach(opt => {
+          extraSelect.innerHTML += `<option value="${opt}">${opt}</option>`;
         });
         extraField.classList.remove("d-none");
+        extraSelect.setAttribute('required', 'true');
+
       } else if (roleSelect.value === "Coach" || roleSelect.value === "Manager") {
         extraLabel.textContent = "Sector";
-        ["Fitness","Strategy","Youth","Administration"].forEach(opt=>{
-          extraSelect.innerHTML += `<option>${opt}</option>`;
+        ["Fitness", "Strategy", "Youth", "Administration"].forEach(opt => {
+          extraSelect.innerHTML += `<option value="${opt}">${opt}</option>`;
         });
         extraField.classList.remove("d-none");
+        extraSelect.setAttribute('required', 'true');
+
       } else {
         extraField.classList.add("d-none");
+        extraSelect.removeAttribute('required');
+      }
+    });
+  }
+
+  // ==============================
+  // Form Validation + Submission
+  // ==============================
+  const registrationForm = document.getElementById("registrationForm");
+
+  if (registrationForm) {
+    registrationForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+
+      const form = e.target;
+
+       // Clean phone numbers BEFORE validation
+      const phoneInput = document.getElementById("phone");
+      const guardianPhoneInput = document.getElementById("guardianPhone");
+
+      phoneInput.value = phoneInput.value.replace(/\D/g, '');
+      guardianPhoneInput.value = guardianPhoneInput.value.replace(/\D/g, '');
+
+      // Validate form
+      if (!form.checkValidity()) {
+        e.stopPropagation();
+        form.classList.add('was-validated');
+        return;
+      }
+
+      // Show loading
+      setSubmittingState(true);
+
+      // Collect form data including country codes
+      const userData = {
+        fullName: document.getElementById("name").value.trim(),
+        age: document.getElementById("age").value.trim(),
+        address: document.getElementById("address").value.trim(),
+        role: roleSelect.value,
+        extra: extraSelect.value || null,
+        phone: document.getElementById("phone").value.trim().replace(/\D/g, ''), // Just the phone number without country code
+        email: document.getElementById("email").value.trim(),
+        guardianName: document.getElementById("guardianName").value.trim(),
+        guardianPhone: document.getElementById("guardianPhone").value.trim().replace(/\D/g, ''), // Just the phone number without country code
+        message: document.getElementById("message").value.trim() || null,
+        countryCode: document.getElementById("phoneCode").value // Send country code separately
+      };
+
+      try {
+        const res = await fetch("http://localhost:5000/api/register", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(userData)
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) {
+          throw new Error(data.message || 'Registration failed');
+        }
+
+        // Save for OTP Verification
+        localStorage.setItem("joinRequestId", data.joinRequestId);
+        localStorage.setItem("phone", userData.countryCode + userData.phone);
+        localStorage.setItem("otpContext", "registration"); // Set context for OTP page
+
+        showToast(`OTP sent to ${userData.countryCode + userData.phone}. Check your SMS.`, 'success');
+
+        // Redirect after delay
+        setTimeout(() => {
+          window.location.href = "otp-verification.html";
+        }, 2000);
+
+      } catch (err) {
+        console.error(err);
+        showToast(err.message || "Failed to submit registration.", 'error');
+        setSubmittingState(false);
       }
     });
 
-    document.getElementById("registrationForm").addEventListener("submit", (e) => {
-      e.preventDefault();
-      const userData = {
-        name: document.getElementById("name").value,
-        age: document.getElementById("age").value,
-        address: document.getElementById("address").value,
-        role: roleSelect.value,
-        extra: extraSelect.value,
-        phone: document.getElementById("phone").value,
-        email: document.getElementById("email").value,
-        guardianName: document.getElementById("guardianName").value,
-        guardianPhone: document.getElementById("guardianPhone").value,
-      };
-      localStorage.setItem("userData", JSON.stringify(userData));
-      // simulate sending OTP
-      const otp = Math.floor(1000 + Math.random() * 9000);
-      localStorage.setItem("otp", otp);
-      alert("OTP sent to " + userData.phone + ": " + otp); // replace with real SMS API
-      window.location.href = "confirmation.html";
+    // ==============================
+    // Input Validation Feedback
+    // ==============================
+    document.querySelectorAll('#registrationForm input, #registrationForm select')
+      .forEach(input => {
+        input.addEventListener('input', () => {
+          if (input.checkValidity()) {
+            input.classList.remove('is-invalid');
+          }
+        });
+      });
+  }
+
+  // ==============================
+  // Phone Number Formatting
+  // ==============================
+  const phoneInput = document.getElementById("phone");
+  const guardianPhoneInput = document.getElementById("guardianPhone");
+
+  function formatPhoneInput(e) {
+    // Remove any non-digit characters
+    let value = e.target.value.replace(/\D/g, '');
+    
+    // Format with spaces for readability: XXX XXX XXX
+    if (value.length > 0) {
+      value = value.match(new RegExp('.{1,3}', 'g')).join(' ');
+    }
+    
+    e.target.value = value;
+  }
+
+  if (phoneInput) {
+    phoneInput.addEventListener("input", formatPhoneInput);
+    phoneInput.addEventListener("keydown", function(e) {
+      // Allow only numbers, backspace, delete, tab, and arrows
+      if (!/[\d\b\t←→]/.test(e.key) && e.key !== 'Backspace' && e.key !== 'Delete' && 
+          e.key !== 'Tab' && e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') {
+        e.preventDefault();
+      }
     });
+  }
+
+  if (guardianPhoneInput) {
+    guardianPhoneInput.addEventListener("input", formatPhoneInput);
+    guardianPhoneInput.addEventListener("keydown", function(e) {
+      // Allow only numbers, backspace, delete, tab, and arrows
+      if (!/[\d\b\t←→]/.test(e.key) && e.key !== 'Backspace' && e.key !== 'Delete' && 
+          e.key !== 'Tab' && e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') {
+        e.preventDefault();
+      }
+    });
+  }
+
+  // ==============================
+  // Age Validation
+  // ==============================
+  const ageInput = document.getElementById("age");
+  if (ageInput) {
+    ageInput.addEventListener("input", function(e) {
+      // Ensure age is within valid range
+      const age = parseInt(e.target.value) || 0;
+      if (age < 5) e.target.value = 5;
+      if (age > 25) e.target.value = 25;
+    });
+  }
+
+  // ==============================
+  // Smooth Scrolling for Navigation
+  // ==============================
+  document.querySelectorAll('a.nav-link[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function (e) {
+      e.preventDefault();
+      const target = document.querySelector(this.getAttribute('href'));
+      if (target) {
+        target.scrollIntoView({
+          behavior: 'smooth',
+          block: 'start'
+        });
+      }
+    });
+  });
+
+  // ==============================
+  // Navbar Background on Scroll
+  // ==============================
+  window.addEventListener('scroll', function() {
+    const navbar = document.querySelector('.navbar');
+    if (window.scrollY > 50) {
+      navbar.classList.add('bg-dark', 'shadow');
+    } else {
+      navbar.classList.remove('bg-dark', 'shadow');
+    }
+  });
   </script>
 </body>
 </html>
