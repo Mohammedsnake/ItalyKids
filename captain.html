@@ -8,41 +8,82 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
   <!-- Google Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&family=Open+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Open+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
   <!-- Emoji Picker -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/emoji-picker-element@1.12.0/dist/emoji-picker.min.css">
   <style>
     :root {
       --primary: #1E5631;
+      --primary-dark: #164324;
+      --primary-light: #2e7d4a;
       --secondary: #A4DE02;
+      --secondary-dark: #8fc700;
       --accent: #FF6B00;
       --light: #f8f9fa;
       --dark: #212529;
+      --gray-100: #f8f9fa;
+      --gray-200: #e9ecef;
+      --gray-300: #dee2e6;
+      --gray-400: #ced4da;
+      --gray-500: #adb5bd;
+      --gray-600: #6c757d;
+      --gray-700: #495057;
+      --gray-800: #343a40;
+      --gray-900: #212529;
       --chat-bg: #f0f2f5;
       --message-sent: #D9FDD3;
       --message-received: #FFFFFF;
       --chat-header: #1E5631;
       --chat-input: #FFFFFF;
       --online-indicator: #4CAF50;
+      --success: #28a745;
+      --warning: #ffc107;
+      --danger: #dc3545;
+      --info: #17a2b8;
+      --border-radius: 12px;
+      --border-radius-sm: 8px;
+      --box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+      --box-shadow-hover: 0 8px 25px rgba(0,0,0,0.12);
+      --transition: all 0.3s ease;
+    }
+    
+    * {
+      box-sizing: border-box;
     }
     
     body {
       font-family: 'Open Sans', sans-serif;
       background-color: #f5f7f9;
-      color: #333;
+      color: var(--gray-800);
       min-height: 100vh;
+      line-height: 1.6;
     }
     
     h1, h2, h3, h4, h5, h6 {
       font-family: 'Montserrat', sans-serif;
       font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 1rem;
     }
     
     .dashboard-header {
-      background: var(--primary);
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
       color: white;
       padding: 20px 0;
       box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .dashboard-header::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="none"><path d="M0,0 L100,0 L100,100 Z" fill="rgba(255,255,255,0.05)"/></svg>');
+      background-size: cover;
     }
     
     .dashboard-brand {
@@ -50,45 +91,62 @@
       align-items: center;
       font-weight: 700;
       font-size: 1.5rem;
+      position: relative;
     }
     
     .dashboard-brand i {
       color: var(--secondary);
       margin-right: 10px;
+      font-size: 1.8rem;
     }
     
     .captain-info {
       text-align: right;
+      position: relative;
     }
     
     .captain-name {
       font-weight: 600;
       font-size: 1.1rem;
       color: var(--secondary);
+      margin-bottom: 0.25rem;
     }
     
     .captain-role {
       font-size: 0.9rem;
-      opacity: 0.8;
+      opacity: 0.9;
     }
     
     .dashboard-nav {
       background: white;
-      padding: 15px 0;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+      padding: 0;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+      position: sticky;
+      top: 0;
+      z-index: 100;
     }
     
     .nav-link {
-      color: var(--dark);
-      font-weight: 600;
-      padding: 10px 15px;
-      border-radius: 5px;
-      transition: all 0.3s;
+      color: var(--gray-700);
+      font-weight: 500;
+      padding: 15px 20px;
+      border-radius: 0;
+      transition: var(--transition);
+      border-bottom: 3px solid transparent;
+      display: flex;
+      align-items: center;
     }
     
     .nav-link:hover, .nav-link.active {
-      background: var(--primary);
-      color: white;
+      background: rgba(30, 86, 49, 0.05);
+      color: var(--primary);
+      border-bottom: 3px solid var(--secondary);
+    }
+    
+    .nav-link i {
+      margin-right: 10px;
+      width: 20px;
+      text-align: center;
     }
     
     .dashboard-content {
@@ -97,25 +155,27 @@
     
     .card {
       border: none;
-      border-radius: 12px;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+      border-radius: var(--border-radius);
+      box-shadow: var(--box-shadow);
       margin-bottom: 25px;
-      transition: transform 0.3s, box-shadow 0.3s;
+      transition: var(--transition);
+      overflow: hidden;
     }
     
     .card:hover {
       transform: translateY(-5px);
-      box-shadow: 0 8px 25px rgba(0,0,0,0.12);
+      box-shadow: var(--box-shadow-hover);
     }
     
     .card-header {
-      background: var(--primary);
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
       color: white;
-      border-radius: 12px 12px 0 0 !important;
+      border-radius: var(--border-radius) var(--border-radius) 0 0 !important;
       padding: 15px 20px;
       font-weight: 600;
       display: flex;
       align-items: center;
+      justify-content: space-between;
     }
     
     .card-header i {
@@ -129,7 +189,14 @@
     
     .stat-card {
       text-align: center;
-      padding: 20px;
+      padding: 25px 20px;
+      border-left: 4px solid var(--primary);
+    }
+    
+    .stat-card i {
+      font-size: 2.5rem;
+      color: var(--primary);
+      margin-bottom: 15px;
     }
     
     .stat-number {
@@ -137,25 +204,30 @@
       font-weight: 700;
       color: var(--primary);
       margin: 10px 0;
+      line-height: 1;
     }
     
     .stat-label {
-      color: #6c757d;
+      color: var(--gray-600);
       font-weight: 600;
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
     }
     
     /* Forms */
     .form-label {
       font-weight: 600;
-      color: var(--dark);
+      color: var(--gray-700);
       margin-bottom: 8px;
     }
     
     .form-control, .form-select {
       padding: 12px 15px;
-      border: 1px solid #ddd;
-      border-radius: 8px;
-      transition: all 0.3s;
+      border: 1px solid var(--gray-300);
+      border-radius: var(--border-radius-sm);
+      transition: var(--transition);
+      font-size: 0.95rem;
     }
     
     .form-control:focus, .form-select:focus {
@@ -163,17 +235,24 @@
       box-shadow: 0 0 0 0.25rem rgba(164, 222, 2, 0.25);
     }
     
+    .btn {
+      padding: 12px 25px;
+      font-weight: 600;
+      border-radius: var(--border-radius-sm);
+      transition: var(--transition);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    
     .btn-primary {
       background: var(--primary);
       border: none;
-      padding: 12px 25px;
-      font-weight: 600;
-      border-radius: 8px;
-      transition: all 0.3s;
     }
     
     .btn-primary:hover {
-      background: #164324;
+      background: var(--primary-dark);
       transform: translateY(-2px);
     }
     
@@ -181,15 +260,21 @@
       background: var(--secondary);
       color: var(--dark);
       border: none;
-      padding: 12px 25px;
-      font-weight: 600;
-      border-radius: 8px;
-      transition: all 0.3s;
     }
     
     .btn-success:hover {
-      background: #8fc700;
+      background: var(--secondary-dark);
       transform: translateY(-2px);
+    }
+    
+    .btn-outline-primary {
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+    
+    .btn-outline-primary:hover {
+      background: var(--primary);
+      border-color: var(--primary);
     }
     
     /* Player Cards */
@@ -206,11 +291,15 @@
       justify-content: space-between;
       margin-bottom: 5px;
       font-weight: 600;
+      color: var(--gray-700);
+      text-transform: none;
+      letter-spacing: 0;
+      font-size: 0.9rem;
     }
     
     .progress {
       height: 20px;
-      background: #e9ecef;
+      background: var(--gray-200);
       border-radius: 10px;
       overflow: hidden;
     }
@@ -222,6 +311,7 @@
       justify-content: center;
       font-weight: 600;
       font-size: 12px;
+      transition: width 0.5s ease;
     }
     
     /* Gallery */
@@ -234,9 +324,10 @@
     
     .gallery-item {
       position: relative;
-      border-radius: 8px;
+      border-radius: var(--border-radius-sm);
       overflow: hidden;
       height: 150px;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.1);
     }
     
     .gallery-item img {
@@ -273,29 +364,51 @@
       color: white;
       margin: 0 5px;
       cursor: pointer;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: var(--transition);
+    }
+    
+    .gallery-actions button:hover {
+      background: rgba(255,255,255,0.2);
     }
     
     /* Notifications */
     .notification-item {
-      border: 1px solid #e0e0e0;
-      border-radius: 8px;
+      border: 1px solid var(--gray-300);
+      border-radius: var(--border-radius-sm);
       margin-bottom: 15px;
       overflow: hidden;
+      transition: var(--transition);
+    }
+    
+    .notification-item:hover {
+      box-shadow: 0 3px 10px rgba(0,0,0,0.08);
     }
     
     .notification-header {
-      background: #f8f9fa;
-      padding: 12px 15px;
+      background: var(--gray-100);
+      padding: 15px;
       cursor: pointer;
       display: flex;
       justify-content: space-between;
       align-items: center;
+      transition: var(--transition);
+    }
+    
+    .notification-header:hover {
+      background: var(--gray-200);
     }
     
     .notification-content {
-      padding: 15px;
+      padding: 20px;
       background: white;
       display: none;
+      border-top: 1px solid var(--gray-200);
     }
     
     .notification-content.show {
@@ -305,8 +418,8 @@
     
     /* Animations */
     @keyframes fadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
     }
     
     .section {
@@ -328,23 +441,27 @@
     .toast {
       background-color: var(--primary);
       color: white;
-      padding: 12px 20px;
-      border-radius: 8px;
+      padding: 15px 20px;
+      border-radius: var(--border-radius-sm);
       margin-bottom: 10px;
       box-shadow: 0 4px 12px rgba(0,0,0,0.15);
       display: flex;
       align-items: center;
       justify-content: space-between;
       animation: slideIn 0.3s ease-out;
+      min-width: 300px;
     }
     
     .toast.error {
-      background-color: #dc3545;
+      background-color: var(--danger);
     }
     
     .toast.success {
-      background-color: var(--secondary);
-      color: var(--dark);
+      background-color: var(--success);
+    }
+    
+    .toast.info {
+      background-color: var(--info);
     }
     
     .toast button {
@@ -353,6 +470,12 @@
       color: inherit;
       margin-left: 15px;
       cursor: pointer;
+      opacity: 0.8;
+      transition: var(--transition);
+    }
+    
+    .toast button:hover {
+      opacity: 1;
     }
     
     @keyframes slideIn {
@@ -363,15 +486,21 @@
     /* Match and Training Cards */
     .match-card, .training-card {
       border-left: 4px solid var(--primary);
+      transition: var(--transition);
+    }
+    
+    .match-card:hover, .training-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
     }
     
     .match-card.cancelled, .training-card.cancelled {
-      border-left-color: #dc3545;
+      border-left-color: var(--danger);
       opacity: 0.7;
     }
     
     .match-card.completed, .training-card.completed {
-      border-left-color: #28a745;
+      border-left-color: var(--success);
     }
     
     .match-time, .training-time {
@@ -380,30 +509,46 @@
     }
     
     .match-location, .training-notes {
-      color: #6c757d;
+      color: var(--gray-600);
       font-size: 0.9rem;
     }
     
     .badge-status {
       font-size: 0.75rem;
       padding: 0.35em 0.65em;
+      border-radius: 20px;
     }
     
     /* Modal Styles */
     .modal-content {
-      border-radius: 12px;
+      border-radius: var(--border-radius);
       border: none;
       box-shadow: 0 10px 30px rgba(0,0,0,0.15);
     }
     
     .modal-header {
-      background: var(--primary);
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
       color: white;
-      border-radius: 12px 12px 0 0;
+      border-radius: var(--border-radius) var(--border-radius) 0 0;
+      padding: 20px;
     }
     
     .modal-header .btn-close {
       filter: invert(1);
+      opacity: 0.8;
+    }
+    
+    .modal-header .btn-close:hover {
+      opacity: 1;
+    }
+    
+    .modal-body {
+      padding: 25px;
+    }
+    
+    .modal-footer {
+      padding: 20px 25px;
+      border-top: 1px solid var(--gray-200);
     }
     
     /* Modern Chat Room Styles */
@@ -412,9 +557,9 @@
       flex-direction: column;
       height: 70vh;
       background: var(--chat-bg);
-      border-radius: 12px;
+      border-radius: var(--border-radius);
       overflow: hidden;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+      box-shadow: var(--box-shadow);
     }
     
     .chat-header {
@@ -474,6 +619,17 @@
       margin-left: 10px;
       cursor: pointer;
       font-size: 1rem;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: var(--transition);
+    }
+    
+    .chat-actions button:hover {
+      background: rgba(255,255,255,0.1);
     }
     
     .chat-messages {
@@ -535,12 +691,12 @@
     .message-sender {
       font-size: 0.85rem;
       font-weight: 600;
-      color: #6c757d;
+      color: var(--gray-600);
     }
     
     .message-time {
       font-size: 0.75rem;
-      color: #adb5bd;
+      color: var(--gray-500);
       margin-left: 10px;
     }
     
@@ -566,17 +722,20 @@
       padding: 5px;
       cursor: pointer;
       font-size: 0.8rem;
-      color: #6c757d;
+      color: var(--gray-600);
+      border-radius: 4px;
+      transition: var(--transition);
     }
     
     .message-actions button:hover {
       color: var(--primary);
+      background: var(--gray-100);
     }
     
     .chat-input-container {
       padding: 15px;
       background: var(--chat-input);
-      border-top: 1px solid #e9ecef;
+      border-top: 1px solid var(--gray-300);
       display: flex;
       align-items: center;
       gap: 10px;
@@ -589,7 +748,13 @@
       background: white;
       border-radius: 24px;
       padding: 0 15px;
-      border: 1px solid #ddd;
+      border: 1px solid var(--gray-300);
+      transition: var(--transition);
+    }
+    
+    .chat-input-wrapper:focus-within {
+      border-color: var(--secondary);
+      box-shadow: 0 0 0 0.25rem rgba(164, 222, 2, 0.25);
     }
     
     .chat-input {
@@ -608,16 +773,16 @@
     .chat-input-actions button {
       background: transparent;
       border: none;
-      color: #6c757d;
+      color: var(--gray-600);
       cursor: pointer;
       font-size: 1.1rem;
       padding: 8px;
       border-radius: 50%;
-      transition: all 0.2s;
+      transition: var(--transition);
     }
     
     .chat-input-actions button:hover {
-      background: #f0f2f5;
+      background: var(--gray-200);
       color: var(--primary);
     }
     
@@ -632,14 +797,14 @@
     }
     
     .send-button:hover {
-      background: #164324 !important;
+      background: var(--primary-dark) !important;
       transform: scale(1.05);
     }
     
     .media-preview-container {
       padding: 10px 15px;
-      border-top: 1px solid #eee;
-      background: #f9f9f9;
+      border-top: 1px solid var(--gray-300);
+      background: var(--gray-100);
       display: none;
     }
     
@@ -653,7 +818,7 @@
     .media-preview img, .media-preview video {
       max-width: 100px;
       max-height: 100px;
-      border-radius: 8px;
+      border-radius: var(--border-radius-sm);
       box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     }
     
@@ -661,7 +826,7 @@
       position: absolute;
       top: -8px;
       right: -8px;
-      background: #ff4d4d;
+      background: var(--danger);
       color: white;
       border: none;
       border-radius: 50%;
@@ -673,6 +838,12 @@
       justify-content: center;
       cursor: pointer;
       box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      transition: var(--transition);
+    }
+    
+    .remove-media:hover {
+      background: #c82333;
+      transform: scale(1.1);
     }
     
     .typing-indicator {
@@ -688,7 +859,7 @@
     .typing-indicator span {
       width: 8px;
       height: 8px;
-      background-color: #9e9ea1;
+      background-color: var(--gray-500);
       border-radius: 50%;
       display: inline-block;
       margin: 0 2px;
@@ -713,7 +884,7 @@
       display: flex;
       align-items: center;
       margin: 15px 0;
-      color: #6c757d;
+      color: var(--gray-600);
       font-size: 0.8rem;
     }
     
@@ -722,7 +893,7 @@
       content: '';
       flex: 1;
       height: 1px;
-      background-color: #e0e0e0;
+      background-color: var(--gray-300);
       margin: 0 10px;
     }
     
@@ -735,7 +906,7 @@
     .edit-message-form input {
       flex: 1;
       padding: 8px 12px;
-      border: 1px solid #ddd;
+      border: 1px solid var(--gray-300);
       border-radius: 15px;
       margin-right: 5px;
       outline: none;
@@ -754,7 +925,7 @@
     .chat-media-preview {
       max-width: 200px;
       max-height: 150px;
-      border-radius: 8px;
+      border-radius: var(--border-radius-sm);
       margin-top: 5px;
       box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     }
@@ -780,6 +951,7 @@
       display: flex;
       align-items: center;
       cursor: pointer;
+      transition: var(--transition);
     }
     
     .reaction:hover {
@@ -790,13 +962,14 @@
       margin-left: 4px;
       font-weight: 600;
     }
+    
     /* New styles for improved chat */
     .replying-to {
       display: flex;
       align-items: center;
       padding: 10px 15px;
-      background-color: #f0f2f5;
-      border-bottom: 1px solid #e0e0e0;
+      background-color: var(--gray-200);
+      border-bottom: 1px solid var(--gray-300);
       font-size: 0.9rem;
     }
     
@@ -815,9 +988,15 @@
     .replying-to button {
       background: none;
       border: none;
-      color: #6c757d;
+      color: var(--gray-600);
       cursor: pointer;
       padding: 5px;
+      border-radius: 50%;
+      transition: var(--transition);
+    }
+    
+    .replying-to button:hover {
+      background: var(--gray-300);
     }
     
     .message-reply {
@@ -837,7 +1016,7 @@
     
     .message-reply-content {
       font-size: 0.85rem;
-      color: #6c757d;
+      color: var(--gray-600);
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
@@ -852,7 +1031,7 @@
     .chat-typing {
       padding: 5px 15px;
       font-size: 0.85rem;
-      color: #6c757d;
+      color: var(--gray-600);
       font-style: italic;
     }
     
@@ -861,11 +1040,12 @@
       top: -30px;
       right: 0;
       background: white;
-      border-radius: 8px;
+      border-radius: var(--border-radius-sm);
       box-shadow: 0 2px 10px rgba(0,0,0,0.1);
       padding: 5px;
       z-index: 100;
       display: none;
+      min-width: 120px;
     }
     
     .message:hover .message-menu {
@@ -881,10 +1061,12 @@
       border: none;
       cursor: pointer;
       font-size: 0.9rem;
+      border-radius: 4px;
+      transition: var(--transition);
     }
     
     .message-menu button:hover {
-      background-color: #f0f2f5;
+      background-color: var(--gray-100);
     }
     
     .chat-scroll-indicator {
@@ -903,7 +1085,7 @@
       box-shadow: 0 2px 10px rgba(0,0,0,0.2);
       z-index: 10;
       opacity: 0;
-      transition: opacity 0.3s, transform 0.3s;
+      transition: var(--transition);
     }
     
     .chat-scroll-indicator:hover {
@@ -919,25 +1101,29 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 20px;
+      margin-bottom: 25px;
       flex-wrap: wrap;
       gap: 15px;
+      padding-bottom: 15px;
+      border-bottom: 1px solid var(--gray-300);
     }
     
     .section-title {
       margin: 0;
       color: var(--primary);
+      font-weight: 700;
+      font-size: 1.75rem;
     }
     
     /* Achievements Styles */
     .achievement-card {
       border-left: 4px solid var(--secondary);
-      transition: all 0.3s;
+      transition: var(--transition);
     }
     
     .achievement-card:hover {
       transform: translateY(-3px);
-      box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+      box-shadow: var(--box-shadow-hover);
     }
     
     .achievement-header {
@@ -951,21 +1137,22 @@
       font-weight: 600;
       color: var(--primary);
       margin-bottom: 5px;
+      font-size: 1.1rem;
     }
     
     .achievement-player {
       font-size: 0.9rem;
-      color: #6c757d;
+      color: var(--gray-600);
     }
     
     .achievement-description {
-      color: #555;
+      color: var(--gray-700);
       margin-bottom: 15px;
     }
     
     .achievement-date {
       font-size: 0.8rem;
-      color: #888;
+      color: var(--gray-500);
       text-align: right;
     }
     
@@ -975,6 +1162,85 @@
       margin-top: 15px;
     }
 
+    /* Loading states */
+    .loading-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(255, 255, 255, 0.8);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 10;
+      border-radius: var(--border-radius);
+    }
+    
+    .btn-loading {
+      position: relative;
+      color: transparent !important;
+    }
+    
+    .btn-loading::after {
+      content: '';
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      top: 50%;
+      left: 50%;
+      margin-left: -10px;
+      margin-top: -10px;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      border-top-color: white;
+      animation: spin 1s linear infinite;
+    }
+    
+    .btn-primary.btn-loading::after {
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      border-top-color: white;
+    }
+    
+    .btn-success.btn-loading::after {
+      border: 2px solid rgba(0, 0, 0, 0.3);
+      border-top-color: var(--dark);
+    }
+    
+    /* Loading spinner */
+    .loading-spinner {
+      display: inline-block;
+      width: 2rem;
+      height: 2rem;
+      border: 3px solid var(--gray-300);
+      border-radius: 50%;
+      border-top: 3px solid var(--primary);
+      animation: spin 1s linear infinite;
+    }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    
+    /* Empty state styling */
+    .empty-state {
+      text-align: center;
+      padding: 40px 20px;
+      color: var(--gray-600);
+    }
+    
+    .empty-state i {
+      font-size: 3rem;
+      margin-bottom: 15px;
+      color: var(--gray-400);
+    }
+    
+    .empty-state h4 {
+      color: var(--gray-600);
+      margin-bottom: 10px;
+    }
+    
     /* Responsive adjustments for chat */
     @media (max-width: 768px) {
       .chat-container {
@@ -997,6 +1263,8 @@
       
       .dashboard-nav .nav-link {
         white-space: nowrap;
+        font-size: 0.9rem;
+        padding: 12px 15px;
       }
       
       .chat-scroll-indicator {
@@ -1004,6 +1272,15 @@
         right: 20px;
         width: 35px;
         height: 35px;
+      }
+      
+      .section-header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      
+      .section-title {
+        font-size: 1.5rem;
       }
     }
     
@@ -1031,13 +1308,13 @@
     
     .search-result-item {
       padding: 10px;
-      border-bottom: 1px solid #eee;
+      border-bottom: 1px solid var(--gray-300);
       cursor: pointer;
-      transition: background-color 0.2s;
+      transition: var(--transition);
     }
     
     .search-result-item:hover {
-      background-color: #f5f5f5;
+      background-color: var(--gray-100);
     }
     
     /* Chat Options Dropdown */
@@ -1046,7 +1323,7 @@
       top: 100%;
       right: 0;
       background: white;
-      border-radius: 8px;
+      border-radius: var(--border-radius-sm);
       box-shadow: 0 2px 10px rgba(0,0,0,0.1);
       padding: 10px 0;
       z-index: 1000;
@@ -1068,27 +1345,11 @@
       border: none;
       cursor: pointer;
       font-size: 0.9rem;
-      transition: background-color 0.2s;
+      transition: var(--transition);
     }
     
     .chat-options-dropdown button:hover {
-      background-color: #f0f2f5;
-    }
-    
-    /* Loading spinner */
-    .loading-spinner {
-      display: inline-block;
-      width: 2rem;
-      height: 2rem;
-      border: 3px solid #f3f3f3;
-      border-radius: 50%;
-      border-top: 3px solid var(--primary);
-      animation: spin 1s linear infinite;
-    }
-    
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
+      background-color: var(--gray-100);
     }
     
     /* Highlight animation for messages */
@@ -1107,17 +1368,76 @@
     }
     
     .chat-messages::-webkit-scrollbar-track {
-      background: #f1f1f1;
+      background: var(--gray-100);
       border-radius: 10px;
     }
     
     .chat-messages::-webkit-scrollbar-thumb {
-      background: #c1c1c1;
+      background: var(--gray-400);
       border-radius: 10px;
     }
     
     .chat-messages::-webkit-scrollbar-thumb:hover {
-      background: #a8a8a8;
+      background: var(--gray-500);
+    }
+    
+    /* Form group improvements */
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+    
+    /* Card action buttons */
+    .card-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 15px;
+    }
+    
+    /* Alert improvements */
+    .alert {
+      border-radius: var(--border-radius-sm);
+      border: none;
+      padding: 15px 20px;
+    }
+    
+    /* Badge improvements */
+    .badge {
+      font-weight: 500;
+      padding: 0.5em 0.75em;
+    }
+    
+    /* Table improvements */
+    .table {
+      border-radius: var(--border-radius-sm);
+      overflow: hidden;
+    }
+    
+    .table th {
+      background-color: var(--gray-100);
+      border-top: none;
+      font-weight: 600;
+      color: var(--gray-700);
+    }
+    
+    /* Input group improvements */
+    .input-group-text {
+      background-color: var(--gray-100);
+      border-color: var(--gray-300);
+    }
+    
+    /* Range input improvements */
+    .form-range::-webkit-slider-thumb {
+      background: var(--primary);
+    }
+    
+    .form-range::-moz-range-thumb {
+      background: var(--primary);
+    }
+    
+    /* Custom checkbox and radio */
+    .form-check-input:checked {
+      background-color: var(--primary);
+      border-color: var(--primary);
     }
   </style>
 </head>
@@ -1149,37 +1469,37 @@
     <div class="container">
       <ul class="nav">
         <li class="nav-item">
-          <a class="nav-link active" href="#" onclick="showSection('dashboard')"><i class="fas fa-home me-2"></i>Dashboard</a>
+          <a class="nav-link active" href="#" onclick="showSection('dashboard')"><i class="fas fa-home"></i>Dashboard</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="#" onclick="showSection('addPlayer')"><i class="fas fa-user-plus me-2"></i>Add Player</a>
+          <a class="nav-link" href="#" onclick="showSection('addPlayer')"><i class="fas fa-user-plus"></i>Add Player</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="#" onclick="showSection('viewPlayers')"><i class="fas fa-users me-2"></i>Players</a>
+          <a class="nav-link" href="#" onclick="showSection('viewPlayers')"><i class="fas fa-users"></i>Players</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="#" onclick="showSection('achievements')"><i class="fas fa-trophy me-2"></i>Achievements</a>
+          <a class="nav-link" href="#" onclick="showSection('achievements')"><i class="fas fa-trophy"></i>Achievements</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="#" onclick="showSection('training')"><i class="fas fa-running me-2"></i>Training</a>
+          <a class="nav-link" href="#" onclick="showSection('training')"><i class="fas fa-running"></i>Training</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="#" onclick="showSection('matches')"><i class="fas fa-trophy me-2"></i>Matches</a>
+          <a class="nav-link" href="#" onclick="showSection('matches')"><i class="fas fa-trophy"></i>Matches</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="#" onclick="showSection('ads')"><i class="fas fa-ad me-2"></i>Ads</a>
+          <a class="nav-link" href="#" onclick="showSection('ads')"><i class="fas fa-ad"></i>Ads</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="#" onclick="showSection('gallery')"><i class="fas fa-images me-2"></i>Gallery</a>
+          <a class="nav-link" href="#" onclick="showSection('gallery')"><i class="fas fa-images"></i>Gallery</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="#" onclick="showSection('notifications')"><i class="fas fa-bell me-2"></i>Applications</a>
+          <a class="nav-link" href="#" onclick="showSection('notifications')"><i class="fas fa-bell"></i>Applications</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="#" onclick="showSection('chatRoom')"><i class="fas fa-comments me-2"></i>Room</a>
+          <a class="nav-link" href="#" onclick="showSection('chatRoom')"><i class="fas fa-comments"></i>Room</a>
         </li>
         <li class="nav-item ms-auto">
-          <a class="nav-link" href="#" id="logoutBtn"><i class="fas fa-sign-out-alt me-2"></i>Logout</a>
+          <a class="nav-link" href="#" id="logoutBtn"><i class="fas fa-sign-out-alt"></i>Logout</a>
         </li>
       </ul>
     </div>
@@ -1193,28 +1513,28 @@
         <div class="row">
           <div class="col-md-6 col-lg-3 mb-4">
             <div class="card stat-card">
-              <i class="fas fa-users fa-2x text-primary"></i>
+              <i class="fas fa-users"></i>
               <div class="stat-number" id="playersCount">0</div>
               <div class="stat-label">Total Players</div>
             </div>
           </div>
           <div class="col-md-6 col-lg-3 mb-4">
             <div class="card stat-card">
-              <i class="fas fa-calendar-check fa-2x text-primary"></i>
+              <i class="fas fa-calendar-check"></i>
               <div class="stat-number" id="trainingCount">0</div>
               <div class="stat-label">Upcoming Sessions</div>
             </div>
           </div>
           <div class="col-md-6 col-lg-3 mb-4">
             <div class="card stat-card">
-              <i class="fas fa-trophy fa-2x text-primary"></i>
+              <i class="fas fa-trophy"></i>
               <div class="stat-number" id="matchesCount">0</div>
               <div class="stat-label">Next Matches</div>
             </div>
           </div>
           <div class="col-md-6 col-lg-3 mb-4">
             <div class="card stat-card">
-              <i class="fas fa-bell fa-2x text-primary"></i>
+              <i class="fas fa-bell"></i>
               <div class="stat-number" id="notificationsCount">0</div>
               <div class="stat-label">Applications</div>
             </div>
@@ -1246,7 +1566,7 @@
                 <div class="text-center py-4">
                   <div class="loading-spinner mx-auto"></div>
                   <p class="mt-2">Loading notifications...</p>
-                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -1327,7 +1647,7 @@
                 <input type="file" class="form-control" id="profile_pic" accept="image/*">
               </div>
               
-              <button type="submit" class="btn btn-primary">
+              <button type="submit" class="btn btn-primary" id="addPlayerBtn">
                 <i class="fas fa-plus-circle me-2"></i> Add Player
               </button>
             </form>
@@ -1456,7 +1776,7 @@
                 <input type="date" class="form-control" id="adValidUntil" required>
               </div>
               
-              <button type="submit" class="btn btn-success">
+              <button type="submit" class="btn btn-success" id="uploadAdBtn">
                 <i class="fas fa-upload me-2"></i> Upload Ad
               </button>
             </form>
@@ -1507,7 +1827,7 @@
                 <input type="text" class="form-control" id="galleryCaption" placeholder="Enter caption">
               </div>
               
-              <button type="submit" class="btn btn-primary">
+              <button type="submit" class="btn btn-primary" id="uploadGalleryBtn">
                 <i class="fas fa-upload me-2"></i> Upload
               </button>
             </form>
@@ -1679,7 +1999,7 @@
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-          <button type="button" class="btn btn-primary" onclick="addAchievement()">Add Achievement</button>
+          <button type="button" class="btn btn-primary" id="addAchievementBtn" onclick="addAchievement()">Add Achievement</button>
         </div>
       </div>
     </div>
@@ -1717,7 +2037,7 @@
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-          <button type="button" class="btn btn-primary" onclick="updateAchievement()">Update Achievement</button>
+          <button type="button" class="btn btn-primary" id="updateAchievementBtn" onclick="updateAchievement()">Update Achievement</button>
         </div>
       </div>
     </div>
@@ -1766,7 +2086,7 @@
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-          <button type="button" class="btn btn-primary" onclick="addTraining()">Schedule Training</button>
+          <button type="button" class="btn btn-primary" id="addTrainingBtn" onclick="addTraining()">Schedule Training</button>
         </div>
       </div>
     </div>
@@ -1805,7 +2125,7 @@
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-          <button type="button" class="btn btn-primary" onclick="addMatch()">Plan Match</button>
+          <button type="button" class="btn btn-primary" id="addMatchBtn" onclick="addMatch()">Plan Match</button>
         </div>
       </div>
     </div>
@@ -1862,7 +2182,7 @@
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-          <button type="button" class="btn btn-primary" onclick="submitProgressUpdate()">Save Changes</button>
+          <button type="button" class="btn btn-primary" id="submitProgressBtn" onclick="submitProgressUpdate()">Save Changes</button>
         </div>
       </div>
     </div>
@@ -1921,7 +2241,15 @@
       emojiPickerContainer: document.getElementById('emojiPickerContainer'),
       chatOptionsDropdown: document.getElementById('chatOptionsDropdown'),
       searchInput: document.getElementById('searchInput'),
-      searchResults: document.getElementById('searchResults')
+      searchResults: document.getElementById('searchResults'),
+      addPlayerBtn: document.getElementById('addPlayerBtn'),
+      uploadAdBtn: document.getElementById('uploadAdBtn'),
+      uploadGalleryBtn: document.getElementById('uploadGalleryBtn'),
+      addAchievementBtn: document.getElementById('addAchievementBtn'),
+      updateAchievementBtn: document.getElementById('updateAchievementBtn'),
+      addTrainingBtn: document.getElementById('addTrainingBtn'),
+      addMatchBtn: document.getElementById('addMatchBtn'),
+      submitProgressBtn: document.getElementById('submitProgressBtn')
     };
 
     // Section navigation
@@ -2030,9 +2358,22 @@
       window.location.href = 'login.html';
     }
     
+    // Set button loading state
+    function setButtonLoading(button, isLoading) {
+      if (isLoading) {
+        button.disabled = true;
+        button.classList.add('btn-loading');
+      } else {
+        button.disabled = false;
+        button.classList.remove('btn-loading');
+      }
+    }
+    
     // Add Player Form Submission
     document.getElementById('addPlayerForm').addEventListener('submit', async function(e) {
       e.preventDefault();
+      
+      setButtonLoading(elements.addPlayerBtn, true);
       
       const formData = new FormData();
       formData.append('fullname', document.getElementById('fullname').value);
@@ -2066,6 +2407,8 @@
         }
       } catch (error) {
         showToast('Error adding player: ' + error.message, 'error');
+      } finally {
+        setButtonLoading(elements.addPlayerBtn, false);
       }
     });
     
@@ -2093,7 +2436,18 @@
         elements.playersContainer.innerHTML = '';
         
         if (players.length === 0) {
-          elements.playersContainer.innerHTML = '<div class="col-12"><p class="text-center">No players found.</p></div>';
+          elements.playersContainer.innerHTML = `
+            <div class="col-12">
+              <div class="empty-state">
+                <i class="fas fa-users"></i>
+                <h4>No Players Yet</h4>
+                <p>Start by adding your first player to the team.</p>
+                <button class="btn btn-primary mt-3" onclick="showSection('addPlayer')">
+                  <i class="fas fa-user-plus me-2"></i> Add Player
+                </button>
+              </div>
+            </div>
+          `;
           return;
         }
         
@@ -2239,6 +2593,8 @@
       const behavior = document.getElementById('behavior').value;
       const performance = document.getElementById('performance').value;
       
+      setButtonLoading(elements.submitProgressBtn, true);
+      
       try {
         const response = await fetch(`${API_BASE}/players/progress/${playerId}`, {
           method: 'PUT',
@@ -2269,6 +2625,8 @@
         }
       } catch (error) {
         showToast('Error updating progress: ' + error.message, 'error');
+      } finally {
+        setButtonLoading(elements.submitProgressBtn, false);
       }
     }
     
@@ -2296,7 +2654,16 @@
         elements.achievementsContainer.innerHTML = '';
         
         if (achievements.length === 0) {
-          elements.achievementsContainer.innerHTML = '<div class="text-center py-4"><p>No achievements found.</p></div>';
+          elements.achievementsContainer.innerHTML = `
+            <div class="empty-state">
+              <i class="fas fa-trophy"></i>
+              <h4>No Achievements Yet</h4>
+              <p>Start recognizing player achievements to build team spirit.</p>
+              <button class="btn btn-success mt-3" data-bs-toggle="modal" data-bs-target="#addAchievementModal">
+                <i class="fas fa-plus me-2"></i> Add Achievement
+              </button>
+            </div>
+          `;
           return;
         }
         
@@ -2387,6 +2754,8 @@
         return;
       }
       
+      setButtonLoading(elements.addAchievementBtn, true);
+      
       try {
         const response = await fetch(`${API_BASE}/achievements`, {
           method: 'POST',
@@ -2417,6 +2786,8 @@
         }
       } catch (error) {
         showToast('Error adding achievement: ' + error.message, 'error');
+      } finally {
+        setButtonLoading(elements.addAchievementBtn, false);
       }
     }
     
@@ -2443,6 +2814,8 @@
         showToast('Please select a player and enter a title', 'error');
         return;
       }
+      
+      setButtonLoading(elements.updateAchievementBtn, true);
       
       try {
         const response = await fetch(`${API_BASE}/achievements/${achievementId}`, {
@@ -2472,6 +2845,8 @@
         }
       } catch (error) {
         showToast('Error updating achievement: ' + error.message, 'error');
+      } finally {
+        setButtonLoading(elements.updateAchievementBtn, false);
       }
     }
     
@@ -2511,6 +2886,8 @@
         return;
       }
       
+      setButtonLoading(elements.addTrainingBtn, true);
+      
       try {
         const response = await fetch(`${API_BASE}/training`, {
           method: 'POST',
@@ -2544,6 +2921,8 @@
         }
       } catch (error) {
         showToast('Error scheduling training: ' + error.message, 'error');
+      } finally {
+        setButtonLoading(elements.addTrainingBtn, false);
       }
     }
     
@@ -2571,7 +2950,16 @@
         elements.trainingContainer.innerHTML = '';
         
         if (trainings.length === 0) {
-          elements.trainingContainer.innerHTML = '<div class="text-center py-4"><p>No training sessions scheduled yet.</p></div>';
+          elements.trainingContainer.innerHTML = `
+            <div class="empty-state">
+              <i class="fas fa-running"></i>
+              <h4>No Training Sessions</h4>
+              <p>Schedule training sessions to keep the team in shape.</p>
+              <button class="btn btn-success mt-3" data-bs-toggle="modal" data-bs-target="#addTrainingModal">
+                <i class="fas fa-plus me-2"></i> Add Training
+              </button>
+            </div>
+          `;
           return;
         }
         
@@ -2592,7 +2980,6 @@
                   </button>
                 </div>
               </div>
-            </div>
             </div>
           `;
           elements.trainingContainer.appendChild(trainingCard);
@@ -2639,6 +3026,8 @@
         return;
       }
       
+      setButtonLoading(elements.addMatchBtn, true);
+      
       try {
         const response = await fetch(`${API_BASE}/matches`, {
           method: 'POST',
@@ -2672,6 +3061,8 @@
         }
       } catch (error) {
         showToast('Error planning match: ' + error.message, 'error');
+      } finally {
+        setButtonLoading(elements.addMatchBtn, false);
       }
     }
     
@@ -2692,14 +3083,23 @@
         });
         
         if (!response.ok) {
-      throw new Error(`Failed to fetch matches: ${response.status}`);
+          throw new Error(`Failed to fetch matches: ${response.status}`);
         }
         
         const matches = await response.json();
         elements.matchesContainer.innerHTML = '';
         
         if (matches.length === 0) {
-          elements.matchesContainer.innerHTML = '<div class="text-center py-4"><p>No matches scheduled yet.</p></div>';
+          elements.matchesContainer.innerHTML = `
+            <div class="empty-state">
+              <i class="fas fa-trophy"></i>
+              <h4>No Matches Scheduled</h4>
+              <p>Plan matches to challenge your team against opponents.</p>
+              <button class="btn btn-success mt-3" data-bs-toggle="modal" data-bs-target="#addMatchModal">
+                <i class="fas fa-plus me-2"></i> Plan Match
+              </button>
+            </div>
+          `;
           return;
         }
         
@@ -2791,7 +3191,13 @@
         elements.upcomingEvents.innerHTML = '';
         
         if (trainings.length === 0 && matches.length === 0) {
-          elements.upcomingEvents.innerHTML = '<div class="text-center py-4"><p>No upcoming events.</p></div>';
+          elements.upcomingEvents.innerHTML = `
+            <div class="empty-state">
+              <i class="fas fa-calendar-alt"></i>
+              <h4>No Upcoming Events</h4>
+              <p>Schedule training sessions or matches to see them here.</p>
+            </div>
+          `;
           return;
         }
         
@@ -2841,7 +3247,13 @@
         const eventsToShow = events.slice(0, 5);
         
         if (eventsToShow.length === 0) {
-          elements.upcomingEvents.innerHTML = '<div class="text-center py-4"><p>No upcoming events.</p></div>';
+          elements.upcomingEvents.innerHTML = `
+            <div class="empty-state">
+              <i class="fas fa-calendar-alt"></i>
+              <h4>No Upcoming Events</h4>
+              <p>Schedule training sessions or matches to see them here.</p>
+            </div>
+          `;
           return;
         }
         
@@ -2874,6 +3286,8 @@
     document.getElementById('addAdForm').addEventListener('submit', async function(e) {
       e.preventDefault();
       
+      setButtonLoading(elements.uploadAdBtn, true);
+      
       const formData = new FormData();
       formData.append('title', document.getElementById('adTitle').value);
       formData.append('link', document.getElementById('adLink').value);
@@ -2904,6 +3318,8 @@
         }
       } catch (error) {
         showToast('Error uploading ad: ' + error.message, 'error');
+      } finally {
+        setButtonLoading(elements.uploadAdBtn, false);
       }
     });
     
@@ -2931,7 +3347,15 @@
         elements.adsContainer.innerHTML = '';
         
         if (ads.length === 0) {
-          elements.adsContainer.innerHTML = '<div class="col-12"><p class="text-center">No ads found.</p></div>';
+          elements.adsContainer.innerHTML = `
+            <div class="col-12">
+              <div class="empty-state">
+                <i class="fas fa-ad"></i>
+                <h4>No Ads Yet</h4>
+                <p>Upload ads to promote your team or sponsors.</p>
+              </div>
+            </div>
+          `;
           return;
         }
         
@@ -2990,6 +3414,8 @@
     document.getElementById('uploadGalleryForm').addEventListener('submit', async function(e) {
       e.preventDefault();
       
+      setButtonLoading(elements.uploadGalleryBtn, true);
+      
       const formData = new FormData();
       formData.append('type', document.getElementById('mediaType').value);
       formData.append('caption', document.getElementById('galleryCaption').value);
@@ -3019,6 +3445,8 @@
         }
       } catch (error) {
         showToast('Error uploading media: ' + error.message, 'error');
+      } finally {
+        setButtonLoading(elements.uploadGalleryBtn, false);
       }
     });
     
@@ -3046,7 +3474,15 @@
         elements.galleryContainer.innerHTML = '';
         
         if (galleryItems.length === 0) {
-          elements.galleryContainer.innerHTML = '<div class="col-12"><p class="text-center">No gallery items found.</p></div>';
+          elements.galleryContainer.innerHTML = `
+            <div class="col-12">
+              <div class="empty-state">
+                <i class="fas fa-images"></i>
+                <h4>No Gallery Items</h4>
+                <p>Upload images or videos to build your team gallery.</p>
+              </div>
+            </div>
+          `;
           return;
         }
         
@@ -3137,7 +3573,7 @@
           const data = await response.json();
           showToast(data.error || 'Failed to delete gallery item', 'error');
         }
-      } catch ( error) {
+      } catch (error) {
         showToast('Error deleting gallery item: ' + error.message, 'error');
       }
     }
@@ -3167,7 +3603,15 @@
         elements.applicationsContainer.innerHTML = '';
         
         if (notifications.length === 0) {
-          elements.applicationsContainer.innerHTML = '<div class="col-12"><p class="text-center">No applications found.</p></div>';
+          elements.applicationsContainer.innerHTML = `
+            <div class="col-12">
+              <div class="empty-state">
+                <i class="fas fa-bell"></i>
+                <h4>No Applications</h4>
+                <p>Player applications will appear here for review.</p>
+              </div>
+            </div>
+          `;
           return;
         }
         
@@ -3429,7 +3873,13 @@
         
         if (messages.length === 0) {
           if (!loadMore) {
-            elements.chatMessages.innerHTML = '<div class="text-center py-4"><p>No messages yet. Start the conversation!</p></div>';
+            elements.chatMessages.innerHTML = `
+              <div class="empty-state">
+                <i class="fas fa-comments"></i>
+                <h4>No Messages Yet</h4>
+                <p>Start the conversation with your team!</p>
+              </div>
+            `;
           }
           hasMoreMessages = false;
           isLoadingMessages = false;
